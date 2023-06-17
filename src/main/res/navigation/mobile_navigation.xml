@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.masbin.myhealth.ui.bottom_navigation.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.masbin.myhealth.ui.bottom_navigation.health.HealthFragment"
+        android:label="@string/title_health"
+        tools:layout="@layout/fragment_health">
+
+        <action
+            android:id="@+id/action_navigation_dashboard_to_stressFragment"
+            app:destination="@id/stressFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_depressFragment"
+            app:destination="@id/depressFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_heartFragment"
+            app:destination="@id/heartFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_sleepFragment"
+            app:destination="@id/sleepFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.masbin.myhealth.ui.bottom_navigation.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/stressFragment"
+        android:name="com.masbin.myhealth.ui.bottom_navigation.health.menu.StressFragment"
+        android:label="fragment_stress"
+        tools:layout="@layout/fragment_stress" />
+    <fragment
+        android:id="@+id/depressFragment"
+        android:name="com.masbin.myhealth.ui.bottom_navigation.health.menu.DepressFragment"
+        android:label="fragment_depress"
+        tools:layout="@layout/fragment_depress" />
+    <fragment
+        android:id="@+id/heartFragment"
+        android:name="com.masbin.myhealth.ui.bottom_navigation.health.menu.HeartFragment"
+        android:label="fragment_heart"
+        tools:layout="@layout/fragment_heart" />
+    <fragment
+        android:id="@+id/sleepFragment"
+        android:name="com.masbin.myhealth.ui.bottom_navigation.health.menu.SleepFragment"
+        android:label="fragment_sleep"
+        tools:layout="@layout/fragment_sleep" />
+
+
+</navigation>
