@@ -1,27 +1,35 @@
 package com.masbin.myhealth.ui.signin
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.huawei.hms.support.hwid.request.HuaweiIdAuthParams
-import com.huawei.hms.support.hwid.service.HuaweiIdAuthService
 import com.masbin.myhealth.R
-import kotlinx.android.synthetic.main.activity_account.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import okhttp3.*
+import com.masbin.myhealth.databinding.ActivityAccountBinding
+import com.masbin.myhealth.ui.signin.LoginActivity
 
 class AccountActivity : AppCompatActivity() {
-
-    private val TAG = "HuaweiIdActivity"
-    private lateinit var mAuthManager: HuaweiIdAuthService
-    private lateinit var mAuthParam: HuaweiIdAuthParams
-    private val REQUEST_SIGN_IN_LOGIN = 1002
+    private lateinit var binding: ActivityAccountBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_account)
+        binding = ActivityAccountBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         supportActionBar?.hide()
+
+        binding.accountSignin.setOnClickListener { login() }
+        binding.signUp.setOnClickListener {registerAccount()}
     }
 
+    private fun registerAccount() {
+        val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
 
-
+    private fun login() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
 }

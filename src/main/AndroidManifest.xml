@@ -22,6 +22,9 @@
         android:theme="@style/Theme.Myhealth"
         tools:ignore="AllowBackup">
         <activity
+            android:name=".ui.signin.RegisterActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.signin.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login"
@@ -37,7 +40,7 @@
         </activity>
         <activity
             android:name=".ui.welcome.WelcomeActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".ui.welcome.WelcomeFirstActivity"
             android:exported="true" />

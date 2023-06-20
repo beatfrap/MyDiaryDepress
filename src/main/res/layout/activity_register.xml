@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white_"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.signin.RegisterActivity">
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="221dp"
+        android:layout_height="221dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.031"
+        app:srcCompat="@drawable/logo_app" />
+
+
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/name"
+        android:layout_width="370dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="@color/blue_"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.365"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.353">
+
+        <TextView
+            android:id="@+id/username_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:text="Username : "
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="201dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:hint="Username"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/emailInput"
+        android:layout_width="370dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="@color/blue_"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.39"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.456">
+
+        <TextView
+            android:id="@+id/emailText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:text="Email : "
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="201dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:hint="Email@gmail.com"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/password"
+        android:layout_width="372dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="@color/blue_"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.384"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.561">
+
+        <TextView
+            android:id="@+id/password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:text="Password : "
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="201dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:hint="Password"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/contactInput"
+        android:layout_width="372dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="@color/blue_"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.66">
+
+        <TextView
+            android:id="@+id/contact_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:text="Emergency contact : "
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/etContact"
+            android:layout_width="201dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="75dp"
+            android:hint="Emergency Contact"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_rounded_blue"
+        android:fontFamily="@font/urbanist_medium"
+        android:text="Daftar"
+        android:textColor="#ffffff"
+        app:backgroundTint="#283558"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.78" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
