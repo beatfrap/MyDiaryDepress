@@ -6,7 +6,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.masbin.myhealth.R
 import com.masbin.myhealth.databinding.ActivityAccountBinding
-import com.masbin.myhealth.ui.signin.LoginActivity
 
 class AccountActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAccountBinding
@@ -16,7 +15,6 @@ class AccountActivity : AppCompatActivity() {
         binding = ActivityAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
-
         binding.accountSignin.setOnClickListener { login() }
         binding.signUp.setOnClickListener {registerAccount()}
     }

@@ -93,6 +93,22 @@
     </androidx.cardview.widget.CardView>
 
     <Button
+        android:id="@+id/btnLupaPassword"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_rounded_blue"
+        android:fontFamily="@font/urbanist_medium"
+        android:text="Lupa Password"
+        android:textColor="#ffffff"
+        app:backgroundTint="#283558"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.749" />
+
+    <Button
         android:id="@+id/btnLogin"
         android:layout_width="280dp"
         android:layout_height="40dp"
