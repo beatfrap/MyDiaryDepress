@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'com.huawei.agconnect'
 }
 
 android {
@@ -97,5 +96,3 @@ dependencies {
     implementation 'com.huawei.hihealth:hihealthkit:6.7.0.300'
 
 }
-
-apply plugin: 'com.huawei.agconnect'
