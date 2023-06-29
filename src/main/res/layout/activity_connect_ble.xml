@@ -2,17 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white_"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.bottom_navigation.home.ConnectBleActivity">
 
+
+
     <Button
-        android:id="@+id/btnConnect"
+        android:id="@+id/btnFindSmartband"
         android:layout_width="280dp"
         android:layout_height="40dp"
         android:background="@drawable/button_rounded_blue"
         android:fontFamily="@font/urbanist_medium"
-        android:text="Log Out"
+        android:text="Find Smartband"
         android:textColor="#ffffff"
         app:backgroundTint="#283558"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,5 +24,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.768" />
+
+    <Button
+        android:id="@+id/btnConnectSmartband"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_rounded_blue"
+        android:fontFamily="@font/urbanist_medium"
+        android:text="Connect Smartband"
+        android:textColor="#ffffff"
+        app:backgroundTint="#283558"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.868" />
+
+    <TextView
+        android:id="@+id/findSmarband"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Smartband"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.masbin.myhealth.databinding.FragmentProfileBinding
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONObject
 import java.io.IOException
 
@@ -48,7 +49,7 @@ class ProfileFragment : Fragment() {
 
         val request = Request.Builder()
             .url(url)
-            .post(RequestBody.create(MediaType.parse("application/json"), "{}"))
+            .post(RequestBody.create("application/json".toMediaTypeOrNull(), "{}"))
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -60,7 +61,7 @@ class ProfileFragment : Fragment() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body()?.string()
+                val responseData = response.body?.string()
                 val jsonObject = JSONObject(responseData)
 
                 val message = jsonObject.getString("message")
