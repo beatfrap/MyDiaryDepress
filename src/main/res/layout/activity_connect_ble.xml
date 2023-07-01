@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white_"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp"
+    android:background="#D9D9D9"
     tools:context=".ui.bottom_navigation.home.ConnectBleActivity">
-
 
     <TextView
         android:id="@+id/nameSmartband"
@@ -15,13 +15,7 @@
         android:layout_marginBottom="16dp"
         android:text="Smartband Name: \nMAC Address:"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.379" />
+        android:textSize="18sp" />
 
     <EditText
         android:id="@+id/editTextBluetoothAddress"
@@ -29,39 +23,39 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/nameSmartband"
         android:hint="Enter Bluetooth Address"
-        android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.473" />
+        android:textColor="@android:color/black"
+        android:inputType="text" />
 
     <Button
         android:id="@+id/btnConnectSmartband"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextBluetoothAddress"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/button_rounded_blue"
+        android:fontFamily="@font/urbanist_medium"
+        android:textColor="#ffffff"
         android:text="Connect Smartband"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.556" />
+        app:backgroundTint="#283558" />
 
     <Button
         android:id="@+id/btnFindSmartband"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnConnectSmartband"
-        android:text="Find Smartband"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.645" />
+        android:layout_marginTop="12dp"
+        android:background="@drawable/button_rounded_blue"
+        android:fontFamily="@font/urbanist_medium"
+        android:textColor="#ffffff"
+        app:backgroundTint="#283558"
+        android:text="Find Smartband" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewDevices"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnFindSmartband"
+        android:layout_marginTop="16dp"
+        />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

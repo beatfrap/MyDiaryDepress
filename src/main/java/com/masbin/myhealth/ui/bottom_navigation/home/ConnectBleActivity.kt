@@ -13,6 +13,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.clj.fastble.BleManager
 import com.clj.fastble.callback.BleGattCallback
 import com.clj.fastble.callback.BleScanCallback
@@ -27,8 +29,11 @@ class ConnectBleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityConnectBleBinding
     private lateinit var textViewSmartband: TextView
     private lateinit var editTextBluetoothAddress: EditText
+    private lateinit var recyclerViewDevices: RecyclerView
+    private lateinit var deviceAdapter: BluetoothDeviceAdapter
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private var bleDevice: BleDevice? = null
+    private val deviceList: ArrayList<BluetoothDevice> = ArrayList()
     private val bleScanCallback: BleScanCallback = object : BleScanCallback() {
         override fun onScanStarted(success: Boolean) {
             // Callback when the scan starts
@@ -47,6 +52,11 @@ class ConnectBleActivity : AppCompatActivity() {
 
         override fun onScanning(bleDevice: BleDevice) {
             // Callback when the scan is ongoing
+            runOnUiThread {
+                // Add the scanned device to the list
+                deviceList.add(bleDevice.device)
+                deviceAdapter.notifyDataSetChanged()
+            }
         }
 
         override fun onScanFinished(scanResultList: List<BleDevice>) {
@@ -65,6 +75,10 @@ class ConnectBleActivity : AppCompatActivity() {
         supportActionBar?.hide()
         this.textViewSmartband = findViewById(R.id.nameSmartband)
         this.editTextBluetoothAddress = findViewById(R.id.editTextBluetoothAddress)
+        this.recyclerViewDevices = findViewById(R.id.recyclerViewDevices)
+        this.deviceAdapter = BluetoothDeviceAdapter(deviceList)
+        recyclerViewDevices.layoutManager = LinearLayoutManager(this)
+        recyclerViewDevices.adapter = deviceAdapter
         this.binding.btnConnectSmartband.setOnClickListener { connectSmartband(bleDevice) }
         this.binding.btnFindSmartband.setOnClickListener { findSmartband() }
 
@@ -126,26 +140,10 @@ class ConnectBleActivity : AppCompatActivity() {
                 .setScanTimeOut(10000)
                 .build()
             BleManager.getInstance().initScanRule(scanRuleConfig)
-            BleManager.getInstance().scan(object : BleScanCallback() {
-                override fun onScanStarted(success: Boolean) {
-                    // Callback when the scan starts
-                }
-
-                override fun onScanning(bleDevice: BleDevice) {
-                    // Callback when the scan is ongoing
-                    runOnUiThread {
-                        textViewSmartband.text = "Smartband Name: ${bleDevice.name}\nMAC Address: ${bleDevice.mac}"
-                    }
-                }
-
-                override fun onScanFinished(scanResultList: List<BleDevice>) {
-                    // Callback when the scan is finished
-                }
-
-                fun onScanFailed(bleException: BleException) {
-                    // Callback when the scan fails
-                }
-            })
+            BleManager.getInstance().scan(bleScanCallback)
+            // Clear the device list before scanning starts
+            deviceList.clear()
+            deviceAdapter.notifyDataSetChanged()
         }
     }
 
@@ -161,7 +159,11 @@ class ConnectBleActivity : AppCompatActivity() {
                     // Callback when the connection fails
                 }
 
-                override fun onConnectSuccess(bleDevice: BleDevice, gatt: BluetoothGatt, status: Int) {
+                override fun onConnectSuccess(
+                    bleDevice: BleDevice,
+                    gatt: BluetoothGatt,
+                    status: Int
+                ) {
                     // Callback when the connection is successful
                     // You can start reading/writing data here
                 }
