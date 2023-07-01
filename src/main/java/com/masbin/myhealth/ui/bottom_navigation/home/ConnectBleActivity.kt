@@ -8,7 +8,7 @@ import android.bluetooth.BluetoothGatt
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -26,6 +26,7 @@ class ConnectBleActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityConnectBleBinding
     private lateinit var textViewSmartband: TextView
+    private lateinit var editTextBluetoothAddress: EditText
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private var bleDevice: BleDevice? = null
     private val bleScanCallback: BleScanCallback = object : BleScanCallback() {
@@ -60,9 +61,10 @@ class ConnectBleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.binding = ActivityConnectBleBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_connect_ble)
+        setContentView(binding.root)
         supportActionBar?.hide()
         this.textViewSmartband = findViewById(R.id.nameSmartband)
+        this.editTextBluetoothAddress = findViewById(R.id.editTextBluetoothAddress)
         this.binding.btnConnectSmartband.setOnClickListener { connectSmartband(bleDevice) }
         this.binding.btnFindSmartband.setOnClickListener { findSmartband() }
 
@@ -146,7 +148,6 @@ class ConnectBleActivity : AppCompatActivity() {
             })
         }
     }
-
 
     private fun connectSmartband(bleDevice: BleDevice?) {
         if (bleDevice != null) {
