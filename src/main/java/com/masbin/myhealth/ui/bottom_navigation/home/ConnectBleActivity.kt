@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -21,6 +22,7 @@ import com.clj.fastble.callback.BleScanCallback
 import com.clj.fastble.data.BleDevice
 import com.clj.fastble.exception.BleException
 import com.clj.fastble.scan.BleScanRuleConfig
+import com.google.android.material.snackbar.Snackbar
 import com.masbin.myhealth.R
 import com.masbin.myhealth.databinding.ActivityConnectBleBinding
 
@@ -39,13 +41,14 @@ class ConnectBleActivity : AppCompatActivity() {
             // Callback when the scan starts
         }
 
+        @SuppressLint("SetTextI18n")
         fun onLeScan(device: BluetoothDevice, rssi: Int, scanRecord: ByteArray?) {
             // Callback when a BLE device is found
             runOnUiThread {
                 val bleDevice = BleDevice(device, rssi, scanRecord, System.currentTimeMillis())
                 if (bleDevice.name?.contains("Xiaomi", true) == true) {
                     this@ConnectBleActivity.bleDevice = bleDevice
-                    textViewSmartband.text = "Smartband Name: ${bleDevice.name}\nMAC Address: ${bleDevice.mac}"
+                    textViewSmartband.text = "Smart band Name: ${bleDevice.name}\nMAC Address: ${bleDevice.mac}"
                 }
             }
         }
@@ -148,38 +151,48 @@ class ConnectBleActivity : AppCompatActivity() {
     }
 
     private fun connectSmartband(bleDevice: BleDevice?) {
-        if (bleDevice != null) {
-            // Connect to the smartband using BleManager
-            BleManager.getInstance().connect(bleDevice, object : BleGattCallback() {
-                override fun onStartConnect() {
-                    // Callback when the connection starts
-                }
+        val bluetoothAddress = editTextBluetoothAddress.text.toString()
+        if (bluetoothAddress.isNotEmpty()) {
+            val device = bleDevice?.device ?: bluetoothAdapter.getRemoteDevice(bluetoothAddress)
+            if (device != null) {
+                // Connect to the smartband using BleManager
+                BleManager.getInstance().connect(device.address, object : BleGattCallback() {
+                    override fun onStartConnect() {
+                        // Callback when the connection starts
+                    }
 
-                override fun onConnectFail(bleDevice: BleDevice, exception: BleException) {
-                    // Callback when the connection fails
-                }
+                    override fun onConnectFail(bleDevice: BleDevice, exception: BleException) {
+                        // Callback when the connection fails
+                    }
 
-                override fun onConnectSuccess(
-                    bleDevice: BleDevice,
-                    gatt: BluetoothGatt,
-                    status: Int
-                ) {
-                    // Callback when the connection is successful
-                    // You can start reading/writing data here
-                }
+                    override fun onConnectSuccess(
+                        bleDevice: BleDevice,
+                        gatt: BluetoothGatt,
+                        status: Int
+                    ) {
+                        runOnUiThread {
+                            Toast.makeText(this@ConnectBleActivity, "Smartband connected!", Toast.LENGTH_SHORT).show()
+                        }
+                        // Callback when the connection is successful
+                        // You can start reading/writing data here
 
-                override fun onDisConnected(
-                    isActiveDisConnected: Boolean,
-                    device: BleDevice,
-                    gatt: BluetoothGatt,
-                    status: Int
-                ) {
-                    // Callback when the device is disconnected
-                    // You can handle reconnection or other actions here
-                }
-            })
+
+                    }
+
+                    override fun onDisConnected(
+                        isActiveDisConnected: Boolean,
+                        device: BleDevice,
+                        gatt: BluetoothGatt,
+                        status: Int
+                    ) {
+                        // Callback when the device is disconnected
+                        // You can handle reconnection or other actions here
+                    }
+                })
+            }
         }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
