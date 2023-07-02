@@ -23,6 +23,7 @@ import com.clj.fastble.data.BleDevice
 import com.clj.fastble.exception.BleException
 import com.clj.fastble.scan.BleScanRuleConfig
 import com.google.android.material.snackbar.Snackbar
+import com.masbin.myhealth.MainAdapterActivity
 import com.masbin.myhealth.R
 import com.masbin.myhealth.databinding.ActivityConnectBleBinding
 
@@ -173,6 +174,9 @@ class ConnectBleActivity : AppCompatActivity() {
                         runOnUiThread {
                             Toast.makeText(this@ConnectBleActivity, "Smartband connected!", Toast.LENGTH_SHORT).show()
                         }
+
+                        val intent = Intent(this@ConnectBleActivity, MainAdapterActivity::class.java)
+                        startActivity(intent)
                         // Callback when the connection is successful
                         // You can start reading/writing data here
 
