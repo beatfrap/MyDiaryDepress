@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -219,7 +220,7 @@ class ConnectBleActivity : AppCompatActivity() {
                             editor.putBoolean("isConnected", isConnected)
                             editor.apply()
 
-                            textViewSmartband.text = "Cari Smartband"
+                            textViewSmartband.text = "Tidak Ada Smartband Yang Terhubung"
                         }
                     }
                 })
@@ -239,13 +240,35 @@ class ConnectBleActivity : AppCompatActivity() {
         editor.putBoolean("isConnected", false)
         editor.apply()
 
-        textViewSmartband.text = "Cari Smartband"
+        textViewSmartband.text = "Tidak Ada Smartband Yang Terhubung"
     }
 
     override fun onDestroy() {
         super.onDestroy()
         BleManager.getInstance().disconnectAllDevice()
         BleManager.getInstance().destroy()
+    }
+
+    override fun onBackPressed() {
+        // Hapus pemanggilan super.onBackPressed()
+        // super.onBackPressed()
+
+        // Kembali ke tampilan sebelumnya, misalnya MainActivity
+        val intent = Intent(this, MainAdapterActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // Hapus pemanggilan super.onKeyDown() jika ada
+            // super.onKeyDown(keyCode, event)
+
+            // Kembali ke tampilan sebelumnya, misalnya MainActivity
+            val intent = Intent(this, MainAdapterActivity::class.java)
+            startActivity(intent)
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     companion object {
