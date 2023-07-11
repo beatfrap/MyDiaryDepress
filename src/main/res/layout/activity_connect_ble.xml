@@ -12,9 +12,12 @@
         android:id="@+id/nameSmartband"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Smartband Name: \nMAC Address:"
-        android:textColor="@android:color/black"
+        android:layout_marginBottom="18dp"
+        android:padding="10dp"
+        android:gravity="center"
+        android:background="@drawable/button_rounded_blue"
+        android:text="Smartband Name:"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
     <EditText
@@ -22,9 +25,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/nameSmartband"
-        android:hint="Enter Bluetooth Address"
-        android:textColor="@android:color/black"
-        android:inputType="text" />
+        android:layout_marginTop="1dp"
+        android:hint="@string/enter_bluetooth_address"
+        android:inputType="text"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/btnConnectSmartband"
@@ -35,7 +39,7 @@
         android:background="@drawable/button_rounded_blue"
         android:fontFamily="@font/urbanist_medium"
         android:textColor="#ffffff"
-        android:text="Connect Smartband"
+        android:text="@string/connect_smartband"
         app:backgroundTint="#283558" />
 
     <Button
@@ -48,14 +52,25 @@
         android:fontFamily="@font/urbanist_medium"
         android:textColor="#ffffff"
         app:backgroundTint="#283558"
-        android:text="Find Smartband" />
+        android:text="@string/find_smartband" />
+
+    <Button
+        android:id="@+id/btnDisconnectSmartband"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnConnectSmartband"
+        android:layout_marginTop="69dp"
+        android:background="@drawable/button_rounded_blue"
+        android:fontFamily="@font/urbanist_medium"
+        android:text="@string/disconnect_smartband"
+        android:textColor="#ffffff"
+        app:backgroundTint="#283558" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewDevices"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/btnFindSmartband"
-        android:layout_marginTop="16dp"
-        />
+        android:layout_marginTop="69dp" />
 
 </RelativeLayout>

@@ -19,5 +19,9 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
+    <string name="disconnect_smartband">Disconnect Smartband</string>
+    <string name="find_smartband">Find Smartband</string>
+    <string name="connect_smartband">Connect Smartband</string>
+    <string name="enter_bluetooth_address">Enter Bluetooth Address</string>
 
 </resources>

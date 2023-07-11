@@ -12,6 +12,12 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_PRIVILEGED"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -80,5 +86,4 @@
             android:name="com.huawei.hms.client.channel.androidMarket"
             android:value="false" />
     </application>
-
 </manifest>

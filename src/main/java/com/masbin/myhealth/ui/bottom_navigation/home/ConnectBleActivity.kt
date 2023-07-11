@@ -2,9 +2,11 @@ package com.masbin.myhealth.ui.bottom_navigation.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -22,11 +24,11 @@ import com.clj.fastble.callback.BleScanCallback
 import com.clj.fastble.data.BleDevice
 import com.clj.fastble.exception.BleException
 import com.clj.fastble.scan.BleScanRuleConfig
-import com.google.android.material.snackbar.Snackbar
 import com.masbin.myhealth.MainAdapterActivity
 import com.masbin.myhealth.R
 import com.masbin.myhealth.databinding.ActivityConnectBleBinding
 
+@Suppress("DEPRECATION")
 class ConnectBleActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityConnectBleBinding
@@ -36,6 +38,7 @@ class ConnectBleActivity : AppCompatActivity() {
     private lateinit var deviceAdapter: BluetoothDeviceAdapter
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private var bleDevice: BleDevice? = null
+    private var isConnected: Boolean = false
     private val deviceList: ArrayList<BluetoothDevice> = ArrayList()
     private val bleScanCallback: BleScanCallback = object : BleScanCallback() {
         override fun onScanStarted(success: Boolean) {
@@ -49,11 +52,13 @@ class ConnectBleActivity : AppCompatActivity() {
                 val bleDevice = BleDevice(device, rssi, scanRecord, System.currentTimeMillis())
                 if (bleDevice.name?.contains("Xiaomi", true) == true) {
                     this@ConnectBleActivity.bleDevice = bleDevice
-                    textViewSmartband.text = "Smart band Name: ${bleDevice.name}\nMAC Address: ${bleDevice.mac}"
+                    textViewSmartband.text =
+                        "Smart band Name: ${bleDevice.name}\nMAC Address: ${bleDevice.mac}"
                 }
             }
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         override fun onScanning(bleDevice: BleDevice) {
             // Callback when the scan is ongoing
             runOnUiThread {
@@ -72,6 +77,7 @@ class ConnectBleActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.binding = ActivityConnectBleBinding.inflate(layoutInflater)
@@ -84,16 +90,21 @@ class ConnectBleActivity : AppCompatActivity() {
         recyclerViewDevices.layoutManager = LinearLayoutManager(this)
         recyclerViewDevices.adapter = deviceAdapter
         this.binding.btnConnectSmartband.setOnClickListener { connectSmartband(bleDevice) }
+        this.binding.btnDisconnectSmartband.setOnClickListener { disconnectSmartband() }
         this.binding.btnFindSmartband.setOnClickListener { findSmartband() }
+        val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+        val isConnected = sharedPreferences.getBoolean("isConnected", false)
+        if (isConnected) {
+            val smartbandName = sharedPreferences.getString("smartbandName", "")
+            val smartbandMac = sharedPreferences.getString("smartbandMac", "")
+
+            if (smartbandName != null && smartbandMac != null) {
+                textViewSmartband.text = "Smartband Name: $smartbandName"
+            }
+        }
 
         // Initialize Bluetooth adapter
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
-        // Check if Bluetooth is supported on the device
-        if (bluetoothAdapter == null) {
-            // Bluetooth is not supported
-            // Handle the case accordingly
-        }
 
         // Check for necessary permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -112,10 +123,11 @@ class ConnectBleActivity : AppCompatActivity() {
         BleManager.getInstance()
             .enableLog(true)
             .setReConnectCount(1, 5000)
-            .setConnectOverTime(20000)
-            .setOperateTimeout(5000)
+            .setConnectOverTime(20000).operateTimeout = 5000
     }
 
+    // function to find the smartband
+    @SuppressLint("NotifyDataSetChanged")
     private fun findSmartband() {
         // Check if Bluetooth is enabled
         if (!bluetoothAdapter.isEnabled) {
@@ -151,6 +163,7 @@ class ConnectBleActivity : AppCompatActivity() {
         }
     }
 
+    //function to connect to the smartband
     private fun connectSmartband(bleDevice: BleDevice?) {
         val bluetoothAddress = editTextBluetoothAddress.text.toString()
         if (bluetoothAddress.isNotEmpty()) {
@@ -173,6 +186,14 @@ class ConnectBleActivity : AppCompatActivity() {
                     ) {
                         runOnUiThread {
                             Toast.makeText(this@ConnectBleActivity, "Smartband connected!", Toast.LENGTH_SHORT).show()
+                            val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putString("smartbandName", bleDevice.name)
+                            editor.putString("smartbandMac", bleDevice.mac)
+                            editor.putBoolean("isConnected", true)
+                            editor.apply()
+
+                            textViewSmartband.text = "Smartband Name: ${bleDevice.name}\nMAC Address: ${bleDevice.mac}"
                         }
 
                         val intent = Intent(this@ConnectBleActivity, MainAdapterActivity::class.java)
@@ -189,14 +210,37 @@ class ConnectBleActivity : AppCompatActivity() {
                         gatt: BluetoothGatt,
                         status: Int
                     ) {
-                        // Callback when the device is disconnected
-                        // You can handle reconnection or other actions here
+                        runOnUiThread {
+                            // Update the isConnected status
+                            isConnected = false
+                            // Save the isConnected status in Shared Preferences
+                            val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putBoolean("isConnected", isConnected)
+                            editor.apply()
+
+                            textViewSmartband.text = "Cari Smartband"
+                        }
                     }
                 })
             }
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun disconnectSmartband() {
+        // Panggil fungsi untuk putuskan koneksi dengan smartband
+
+        // Hentikan Service
+
+        // Set status koneksi ke false
+        val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isConnected", false)
+        editor.apply()
+
+        textViewSmartband.text = "Cari Smartband"
+    }
 
     override fun onDestroy() {
         super.onDestroy()
