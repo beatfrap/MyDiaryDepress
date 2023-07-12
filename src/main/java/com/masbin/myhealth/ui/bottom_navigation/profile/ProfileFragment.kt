@@ -1,5 +1,7 @@
 package com.masbin.myhealth.ui.bottom_navigation.profile
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.masbin.myhealth.databinding.FragmentProfileBinding
+import com.masbin.myhealth.ui.signin.AccountActivity
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONObject
@@ -36,6 +39,15 @@ class ProfileFragment : Fragment() {
             logout()
         }
 
+        // Check login status
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        if (!isLoggedIn) {
+            val intent = Intent(requireContext(), AccountActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish() // Optional: Finish the current activity to prevent going back
+        }
+
         return root
     }
 
@@ -45,34 +57,20 @@ class ProfileFragment : Fragment() {
     }
 
     private fun logout() {
-        val url = "https://beflask.as.r.appspot.com/post/logout" // Ganti dengan URL endpoint logout pada Flask
+        // Clear session or perform any logout operations
+        // For example, you can clear the login status in SharedPreferences
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isLoggedIn", false)
+        editor.apply()
 
-        val request = Request.Builder()
-            .url(url)
-            .post(RequestBody.create("application/json".toMediaTypeOrNull(), "{}"))
-            .build()
+        // Display a toast message to the user
+        showToast("Logged out successfully")
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                // Handle failure
-                activity?.runOnUiThread {
-                    showToast("Logout failed")
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                val jsonObject = JSONObject(responseData)
-
-                val message = jsonObject.getString("message")
-
-                activity?.runOnUiThread {
-                    showToast(message)
-
-                    // Perform necessary actions after logout, such as navigating to login screen
-                }
-            }
-        })
+        // Start AccountActivity after logout
+        val intent = Intent(requireContext(), AccountActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish() // Optional: Finish the current activity to prevent going back
     }
 
     private fun showToast(message: String) {
