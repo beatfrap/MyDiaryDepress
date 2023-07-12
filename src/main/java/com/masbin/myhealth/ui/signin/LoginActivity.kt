@@ -1,13 +1,12 @@
 package com.masbin.myhealth.ui.signin
 
-import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import com.masbin.myhealth.MainAdapterActivity
 import com.masbin.myhealth.R
@@ -23,10 +22,13 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
     private lateinit var btnLupaPassword: Button
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
 
         etUsername = findViewById(R.id.etUsername)
         etPassword = findViewById(R.id.etPassword)
@@ -46,7 +48,16 @@ class LoginActivity : AppCompatActivity() {
                 SendDataLoginToServer().execute(data.toString())
             }
         }
-        btnLupaPassword.setOnClickListener {lupaPassword()}
+        btnLupaPassword.setOnClickListener { lupaPassword() }
+
+        // Check login status when the app starts
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        if (isLoggedIn) {
+            val intent = Intent(this@LoginActivity, MainAdapterActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            finish() // Don't go back to LoginActivity if already logged in
+        }
     }
 
     private fun lupaPassword() {
@@ -55,10 +66,9 @@ class LoginActivity : AppCompatActivity() {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
-    @SuppressLint("StaticFieldLeak")
     private inner class SendDataLoginToServer : AsyncTask<String, Void, String>() {
         override fun doInBackground(vararg params: String): String? {
-            val urlString = "https://beflask.as.r.appspot.com/post/login" // Ganti dengan URL server Flask Anda
+            val urlString = "https://beflask.as.r.appspot.com/post/login" // Replace with your Flask server URL
             val jsonData = params[0]
 
             return try {
@@ -93,9 +103,16 @@ class LoginActivity : AppCompatActivity() {
                 val message = response.getString("message")
                 if (message == "Login successful") {
                     Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
+
+                    // Save login status to Shared Preferences
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean("isLoggedIn", true)
+                    editor.apply()
+
                     val intent = Intent(this@LoginActivity, MainAdapterActivity::class.java)
                     startActivity(intent)
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                    finish() // Don't go back to LoginActivity after successful login
                 } else {
                     Toast.makeText(this@LoginActivity, "Invalid username or password", Toast.LENGTH_SHORT).show()
                 }
@@ -103,5 +120,16 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this@LoginActivity, "Failed to login", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun logout() {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isLoggedIn", false)
+        editor.apply()
+    }
+
+    // Example usage: when the logout button is clicked
+    private fun handleLogout() {
+        logout()
     }
 }
