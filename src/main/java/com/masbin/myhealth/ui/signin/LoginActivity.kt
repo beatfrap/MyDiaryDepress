@@ -104,16 +104,18 @@ class LoginActivity : AppCompatActivity() {
                 if (message == "Login successful") {
                     Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
 
-                    // Save login status to Shared Preferences
+                    // Save login status and user ID to Shared Preferences
                     val editor = sharedPreferences.edit()
                     editor.putBoolean("isLoggedIn", true)
+                    editor.putString("user_id", response.getString("user_id")) // Simpan ID pengguna
                     editor.apply()
 
                     val intent = Intent(this@LoginActivity, MainAdapterActivity::class.java)
                     startActivity(intent)
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                     finish() // Don't go back to LoginActivity after successful login
-                } else {
+                }
+                else {
                     Toast.makeText(this@LoginActivity, "Invalid username or password", Toast.LENGTH_SHORT).show()
                 }
             } else {

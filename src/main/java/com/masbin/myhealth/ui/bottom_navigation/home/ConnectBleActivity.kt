@@ -6,10 +6,12 @@ import android.app.ActivityManager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.TextView
@@ -28,10 +30,18 @@ import com.clj.fastble.scan.BleScanRuleConfig
 import com.masbin.myhealth.MainAdapterActivity
 import com.masbin.myhealth.R
 import com.masbin.myhealth.databinding.ActivityConnectBleBinding
+import java.util.UUID
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
+
 
 @Suppress("DEPRECATION")
 class ConnectBleActivity : AppCompatActivity() {
 
+    private lateinit var user_id: String
     private lateinit var binding: ActivityConnectBleBinding
     private lateinit var textViewSmartband: TextView
     private lateinit var editTextBluetoothAddress: EditText
@@ -94,6 +104,7 @@ class ConnectBleActivity : AppCompatActivity() {
         this.binding.btnDisconnectSmartband.setOnClickListener { disconnectSmartband() }
         this.binding.btnFindSmartband.setOnClickListener { findSmartband() }
         val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+        user_id = sharedPreferences.getString("user_id", "") ?: ""
         val isConnected = sharedPreferences.getBoolean("isConnected", false)
         if (isConnected) {
             val smartbandName = sharedPreferences.getString("smartbandName", "")
@@ -193,6 +204,18 @@ class ConnectBleActivity : AppCompatActivity() {
                             editor.putString("smartbandMac", bleDevice.mac)
                             editor.putBoolean("isConnected", true)
                             editor.apply()
+                            // Ambil data detak jantung
+                            val heartRate = readHeartRateData(gatt)
+
+                            // Ambil data waktu tidur
+                            val sleepData = readSleepData(gatt)
+
+                            // Ambil data tingkat stres
+                            val stressLevel = readStressLevel(gatt)
+
+                            sendHeartRateData(user_id, heartRate)
+                            sendSleepData(user_id, sleepData)
+                            sendStressData(user_id, stressLevel)
 
                             textViewSmartband.text = "Smartband Name: ${bleDevice.name}\nMAC Address: ${bleDevice.mac}"
                         }
@@ -227,6 +250,141 @@ class ConnectBleActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun sendHeartRateData(user_id: String, heartRate: Int) {
+        val url = "http://your-server-url/post/heartrate/$user_id"
+        val requestBody = FormBody.Builder()
+            .add("heartrate", heartRate.toString())
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    // Tanggapi respon sukses dari server
+                    val responseBody = response.body?.string()
+                    Log.d("HeartRatePost", responseBody ?: "")
+                } else {
+                    // Tanggapi respon gagal dari server
+                    Log.d("HeartRatePost", "Gagal mengirim data detak jantung")
+                }
+            }
+        })
+    }
+
+    private fun sendSleepData(user_id: String, sleepData: String) {
+        val url = "http://your-server-url/post/sleep/$user_id"
+        val requestBody = FormBody.Builder()
+            .add("sleep", sleepData)
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    // Tanggapi respon sukses dari server
+                    val responseBody = response.body?.string()
+                    Log.d("SleepDataPost", responseBody ?: "")
+                } else {
+                    // Tanggapi respon gagal dari server
+                    Log.d("SleepDataPost", "Gagal mengirim data waktu tidur")
+                }
+            }
+        })
+    }
+
+    private fun sendStressData(user_id: String, stressLevel: String) {
+        val url = "http://your-server-url/post/stress/$user_id"
+        val requestBody = FormBody.Builder()
+            .add("stress", stressLevel)
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    // Tanggapi respon sukses dari server
+                    val responseBody = response.body?.string()
+                    Log.d("StressDataPost", responseBody ?: "")
+                } else {
+                    // Tanggapi respon gagal dari server
+                    Log.d("StressDataPost", "Gagal mengirim data tingkat stres")
+                }
+            }
+        })
+    }
+
+    // Fungsi untuk mengambil data detak jantung
+    private fun readHeartRateData(gatt: BluetoothGatt): Int {
+        // Implementasikan kode untuk membaca data detak jantung dari smartband menggunakan perpustakaan Huami (Mi Fit)
+        // Pastikan Anda telah menginisialisasi dan menghubungkan perpustakaan Huami (Mi Fit) dengan benar
+
+        // Contoh kode sederhana untuk mendapatkan data detak jantung
+        val HEART_RATE_SERVICE_UUID = UUID.fromString("0000180d-0000-1000-8000-00805f9b34fb")
+        val HEART_RATE_MEASUREMENT_UUID = UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb")
+        val heartRateCharacteristic = gatt.getService(HEART_RATE_SERVICE_UUID)?.getCharacteristic(HEART_RATE_MEASUREMENT_UUID)
+        val heartRateValue = heartRateCharacteristic?.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1) ?: -1
+
+        Log.d("HeartRate", "Detak Jantung: $heartRateValue")
+
+        return heartRateValue
+    }
+
+    // Fungsi untuk mengambil data waktu tidur
+    private fun readSleepData(gatt: BluetoothGatt): String {
+        // Implementasikan kode untuk membaca data waktu tidur dari smartband menggunakan perpustakaan Huami (Mi Fit)
+        // Pastikan Anda telah menginisialisasi dan menghubungkan perpustakaan Huami (Mi Fit) dengan benar
+
+        // Contoh kode sederhana untuk mendapatkan data waktu tidur
+        val SLEEP_SERVICE_UUID = UUID.fromString("0000fee0-0000-1000-8000-00805f9b34fb")
+        val SLEEP_DATA_UUID = UUID.fromString("00000009-0000-3512-2118-0009af100700")
+        val sleepCharacteristic = gatt.getService(SLEEP_SERVICE_UUID)?.getCharacteristic(SLEEP_DATA_UUID)
+        val sleepValue = sleepCharacteristic?.getStringValue(0)
+
+        Log.d("Sleep", "Waktu Tidur: $sleepValue")
+        return sleepValue ?: ""
+    }
+
+    // Fungsi untuk mengambil data tingkat stres
+    private fun readStressLevel(gatt: BluetoothGatt): String {
+        // Implementasikan kode untuk membaca data tingkat stres dari smartband menggunakan perpustakaan Huami (Mi Fit)
+        // Pastikan Anda telah menginisialisasi dan menghubungkan perpustakaan Huami (Mi Fit) dengan benar
+
+        // Contoh kode sederhana untuk mendapatkan data tingkat stres
+        val STRESS_SERVICE_UUID = UUID.fromString("0000fee0-0000-1000-8000-00805f9b34fb")
+        val STRESS_LEVEL_UUID = UUID.fromString("00000008-0000-3512-2118-0009af100700")
+        val stressCharacteristic = gatt.getService(STRESS_SERVICE_UUID)?.getCharacteristic(STRESS_LEVEL_UUID)
+        val stressValue = stressCharacteristic?.getStringValue(0)
+
+        Log.d("Stress", "Tingkat Stres: $stressValue")
+
+        return stressValue ?: ""
+    }
+
 
     @SuppressLint("SetTextI18n")
     private fun disconnectSmartband() {
