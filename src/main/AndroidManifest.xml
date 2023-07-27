@@ -39,6 +39,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Myhealth"
         tools:ignore="AllowBackup">
+        <!-- Deklarasikan service HeartService -->
+        <service
+            android:name=".service.HeartService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!-- Deklarasikan service StressService -->
+        <service
+            android:name=".service.StressService"
+            android:enabled="true"
+            android:exported="false" />
         <activity
             android:name=".ui.bottom_navigation.home.ForgotPasswordActivity"
             android:exported="true" />
