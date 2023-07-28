@@ -69,7 +69,7 @@ class HeartService : Service() {
     }
 
     private fun sendHeartRateData(userId: Int, heartRate: Int) {
-        val url = "https://beflask.as.r.appspot.com//post/heartrate/$userId"
+        val url = "https://beflask.as.r.appspot.com/post/heartrate/$userId"
         val requestBody = FormBody.Builder()
             .add("heartrate", heartRate.toString())
             .build()
