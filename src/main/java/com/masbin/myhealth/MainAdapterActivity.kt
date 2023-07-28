@@ -7,6 +7,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.masbin.myhealth.databinding.ActivityMainAdapterBinding
 import com.masbin.myhealth.service.HeartService
+import com.masbin.myhealth.service.SleepService
 import com.masbin.myhealth.service.StressService
 
 class MainAdapterActivity : AppCompatActivity() {
@@ -25,6 +26,12 @@ class MainAdapterActivity : AppCompatActivity() {
         // Mulai HeartService dan StressService saat Activity dibuat
         startHeartService()
         startStressService()
+        startSleepService()
+    }
+
+    private fun startSleepService() {
+        val intent = Intent(this, SleepService::class.java)
+        startService(intent)
     }
 
     private fun startHeartService() {

@@ -1,5 +1,6 @@
 package com.masbin.myhealth.ui.signin
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.AsyncTask
@@ -66,7 +67,9 @@ class LoginActivity : AppCompatActivity() {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
+    @SuppressLint("StaticFieldLeak")
     private inner class SendDataLoginToServer : AsyncTask<String, Void, String>() {
+        @Deprecated("Deprecated in Java")
         override fun doInBackground(vararg params: String): String? {
             val urlString = "https://beflask.as.r.appspot.com/post/login" // Replace with your Flask server URL
             val jsonData = params[0]
@@ -97,6 +100,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onPostExecute(result: String?) {
             if (result != null) {
                 val response = JSONObject(result)
@@ -107,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
                     // Save login status and user ID to Shared Preferences
                     val editor = sharedPreferences.edit()
                     editor.putBoolean("isLoggedIn", true)
-                    editor.putString("user_id", response.getString("user_id")) // Simpan ID pengguna
+//                    editor.putString("user_id", response.getString("user_id")) // Simpan ID pengguna
                     editor.apply()
 
                     val intent = Intent(this@LoginActivity, MainAdapterActivity::class.java)
