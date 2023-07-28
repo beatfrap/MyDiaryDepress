@@ -14,18 +14,24 @@ import kotlin.concurrent.timerTask
 class StressService : Service() {
     private val random = Random()
     private lateinit var timer: Timer
+    private var isFirstRun = true // Tambahkan boolean ini untuk melacak status service
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "StressService started")
-        updateAndSendStressData()
+
+        if (isFirstRun) {
+            updateAndSendStressData()
+            isFirstRun = false
+        }
 
         timer = Timer()
         timer.schedule(timerTask {
             updateAndSendStressData()
-        }, 0, 5 * 60 * 1000) // Setiap 5 menit
+        }, 5 * 60 * 1000, 5 * 60 * 1000) // Setiap 5 menit setelah 5 menit pertama
 
         return START_STICKY
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -51,7 +57,7 @@ class StressService : Service() {
     }
 
     private fun sendStressData(userId: Int, stress: Int) {
-        val url = "https://beflask.as.r.appspot.com/post/stress/$userId"
+        val url = "https://beflask.as.r.appspot.com//post/stress/$userId"
         val requestBody = FormBody.Builder()
             .add("stress", stress.toString())
             .build()
