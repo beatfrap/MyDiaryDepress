@@ -2,7 +2,6 @@
 package com.masbin.myhealth.service
 
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
@@ -10,7 +9,6 @@ import android.util.Log
 import okhttp3.*
 import java.io.IOException
 import java.util.*
-import kotlin.concurrent.timerTask
 
 class SleepService : Service() {
     private val random = Random()
@@ -56,22 +54,24 @@ class SleepService : Service() {
     }
 
     private fun updateAndSendSleepData() {
-        val sleepValue = getSleepData(1, 8)
+        val sleepValue = getSleepData(6)
         Log.d(TAG, "Updating sleep data: $sleepValue")
 
         // Kirim data ke server
         val userId = 1 // Ganti dengan ID pengguna yang sesuai
-        sendSleepData(userId, sleepValue)
+        val classification = "good"
+        sendSleepData(userId, sleepValue, classification)
     }
 
-    private fun getSleepData(start: Int, end: Int): Int {
-        return random.nextInt(end - start + 1) + start
+    private fun getSleepData(start: Int): Int {
+        return random.nextInt(start)
     }
 
-    private fun sendSleepData(userId: Int, sleepValue: Int) {
+    private fun sendSleepData(userId: Int, sleep: Int, classification: String) {
         val url = "https://beflask.as.r.appspot.com//post/sleep/$userId"
         val requestBody = FormBody.Builder()
-            .add("sleep", sleepValue.toString())
+            .add("sleep", sleep.toString())
+            .add("classification", classification)
             .build()
 
         val client = OkHttpClient()
@@ -98,6 +98,5 @@ class SleepService : Service() {
 
     companion object {
         private const val TAG = "SleepService"
-        const val ACTION_SLEEP_UPDATE = "com.masbin.myhealth.service.action.SLEEP_UPDATE"
     }
 }

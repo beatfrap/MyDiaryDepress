@@ -1,9 +1,12 @@
 // StressService.kt
 package com.masbin.myhealth.service
 
+import android.app.Notification
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import okhttp3.*
@@ -14,33 +17,44 @@ import kotlin.concurrent.timerTask
 class StressService : Service() {
     private val random = Random()
     private lateinit var timer: Timer
-    private var isFirstRun = true // Tambahkan boolean ini untuk melacak status service
+    private lateinit var handler: Handler
+    private var isServiceRunning = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "StressService started")
-
-        if (isFirstRun) {
-            updateAndSendStressData()
-            isFirstRun = false
-        }
-
-        timer = Timer()
-        timer.schedule(timerTask {
-            updateAndSendStressData()
-        }, 5 * 60 * 1000, 5 * 60 * 1000) // Setiap 5 menit setelah 5 menit pertama
+        handler = Handler()
+        startStressUpdates()
 
         return START_STICKY
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
-        timer.cancel()
+        stopStressUpdates()
         Log.d(TAG, "StressService destroyed")
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
+    }
+
+    private fun startStressUpdates() {
+        isServiceRunning = true
+        handler.post(updateRunnable)
+    }
+
+    private fun stopStressUpdates() {
+        isServiceRunning = false
+        handler.removeCallbacks(updateRunnable)
+    }
+
+    private val updateRunnable = object : Runnable {
+        override fun run() {
+            if (isServiceRunning) {
+                updateAndSendStressData()
+                handler.postDelayed(this, 5 * 60 * 1000) // Update setiap 5 menit
+            }
+        }
     }
 
     private fun updateAndSendStressData() {
@@ -88,6 +102,5 @@ class StressService : Service() {
         private const val TAG = "StressService"
         const val ACTION_STRESS_UPDATE = "com.masbin.myhealth.service.action.STRESS_UPDATE"
         const val EXTRA_STRESS_VALUE = "com.masbin.myhealth.service.extra.STRESS_VALUE"
-
     }
 }
