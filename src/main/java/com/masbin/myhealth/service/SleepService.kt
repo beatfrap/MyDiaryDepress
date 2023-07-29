@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import com.masbin.myhealth.ui.signin.UserManager
+//import com.masbin.myhealth.ui.signin.UserManager
 import okhttp3.*
 import java.io.IOException
 import java.util.*
@@ -54,24 +56,25 @@ class SleepService : Service() {
     }
 
     private fun updateAndSendSleepData() {
-        val sleepValue = getSleepData(6)
+        val sleepValue = 6
         Log.d(TAG, "Updating sleep data: $sleepValue")
 
-        // Kirim data ke server
-        val userId = 1 // Ganti dengan ID pengguna yang sesuai
-        val classification = "good"
-        sendSleepData(userId, sleepValue, classification)
+        if (UserManager.isLoggedIn()) {
+            val userId = UserManager.getUserId()
+            sendSleepData(userId, sleepValue)
+        } else {
+            Log.d(TAG, "User not logged in, cannot send sleep data")
+        }
     }
 
     private fun getSleepData(start: Int): Int {
         return random.nextInt(start)
     }
 
-    private fun sendSleepData(userId: Int, sleep: Int, classification: String) {
+    private fun sendSleepData(userId: Int, sleep: Int) {
         val url = "https://beflask.as.r.appspot.com//post/sleep/$userId"
         val requestBody = FormBody.Builder()
             .add("sleep", sleep.toString())
-            .add("classification", classification)
             .build()
 
         val client = OkHttpClient()
@@ -87,9 +90,9 @@ class SleepService : Service() {
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    Log.d(TAG, "Data sent successfully")
+                    Log.d(TAG, "Data Sleep sent successfully")
                 } else {
-                    Log.d(TAG, "Failed to send data")
+                    Log.d(TAG, "Failed to send data Sleep")
                 }
                 response.close()
             }

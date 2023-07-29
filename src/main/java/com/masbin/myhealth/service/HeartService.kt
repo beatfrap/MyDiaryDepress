@@ -7,6 +7,8 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import com.masbin.myhealth.ui.signin.UserManager
+//import com.masbin.myhealth.ui.signin.UserManager
 import okhttp3.*
 import java.io.IOException
 import java.util.*
@@ -56,12 +58,15 @@ class HeartService : Service() {
     }
 
     private fun updateAndSendHeartRateData() {
-        val heartRateValue = getHeartRateData(80, 110)
+        val heartRateValue = getHeartRateData(40, 130)
         Log.d(TAG, "Updating heart rate data: $heartRateValue")
 
-        // Kirim data ke server
-        val userId = 1 // Ganti dengan ID pengguna yang sesuai
-        sendHeartRateData(userId, heartRateValue)
+        if (UserManager.isLoggedIn()) {
+            val userId = UserManager.getUserId()
+            sendHeartRateData(userId, heartRateValue)
+        } else {
+            Log.d(TAG, "User not logged in, cannot send heart rate data")
+        }
     }
 
     private fun getHeartRateData(start: Int, end: Int): Int {
@@ -87,9 +92,9 @@ class HeartService : Service() {
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    Log.d(TAG, "Data sent successfully")
+                    Log.d(TAG, "Data Heart Rate sent successfully")
                 } else {
-                    Log.d(TAG, "Failed to send data")
+                    Log.d(TAG, "Failed to send data Heart Rate")
                 }
                 response.close()
             }
@@ -99,6 +104,5 @@ class HeartService : Service() {
     companion object {
         private const val TAG = "HeartService"
         const val ACTION_HEART_RATE_UPDATE = "com.masbin.myhealth.service.action.HEART_RATE_UPDATE"
-
     }
 }

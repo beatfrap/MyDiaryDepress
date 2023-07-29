@@ -9,6 +9,8 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import com.masbin.myhealth.ui.signin.UserManager
+//import com.masbin.myhealth.ui.signin.UserManager
 import okhttp3.*
 import java.io.IOException
 import java.util.*
@@ -58,12 +60,15 @@ class StressService : Service() {
     }
 
     private fun updateAndSendStressData() {
-        val stressValue = getStressData(40, 60)
+        val stressValue = getStressData(40, 70)
         Log.d(TAG, "Updating stress data: $stressValue")
 
-        // Kirim data ke server
-        val userId = 1 // Ganti dengan ID pengguna yang sesuai
-        sendStressData(userId, stressValue)
+        if (UserManager.isLoggedIn()) {
+            val userId = UserManager.getUserId()
+            sendStressData(userId, stressValue)
+        } else {
+            Log.d(TAG, "User not logged in, cannot send stress data")
+        }
     }
 
     private fun getStressData(start: Int, end: Int): Int {
@@ -71,7 +76,7 @@ class StressService : Service() {
     }
 
     private fun sendStressData(userId: Int, stress: Int) {
-        val url = "https://beflask.as.r.appspot.com//post/stress/$userId"
+        val url = "https://beflask.as.r.appspot.com/post/stress/$userId"
         val requestBody = FormBody.Builder()
             .add("stress", stress.toString())
             .build()
@@ -89,9 +94,9 @@ class StressService : Service() {
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    Log.d(TAG, "Data sent successfully")
+                    Log.d(TAG, "Data Stress sent successfully")
                 } else {
-                    Log.d(TAG, "Failed to send data")
+                    Log.d(TAG, "Failed to send data Stress")
                 }
                 response.close()
             }
