@@ -26,11 +26,11 @@ class SleepService : Service() {
         return START_STICKY
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        stopSleepUpdates()
-        Log.d(TAG, "SleepService destroyed")
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        stopSleepUpdates()
+//        Log.d(TAG, "SleepService destroyed")
+//    }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
