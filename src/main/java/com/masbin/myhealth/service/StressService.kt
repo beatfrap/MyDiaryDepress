@@ -30,12 +30,6 @@ class StressService : Service() {
         return START_STICKY
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        stopStressUpdates()
-//        Log.d(TAG, "StressService destroyed")
-//    }
-
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -76,7 +70,7 @@ class StressService : Service() {
     }
 
     private fun sendStressData(userId: Int, stress: Int) {
-        val url = "https://beflask.as.r.appspot.com/post/stress/$userId"
+        val url = "https://beflask.as.r.appspot.com//post/stress/$userId"
         val requestBody = FormBody.Builder()
             .add("stress", stress.toString())
             .build()
