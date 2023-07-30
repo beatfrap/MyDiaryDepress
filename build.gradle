@@ -20,22 +20,23 @@ android {
         enabled = true
     }
 
-//    signingConfigs {
-//        release {
-//            storeFile file('demo.jks')
-//            keyAlias 'hmsdemo'
-//            keyPassword '12345678'
-//            storePassword '12345678'
-//            v1SigningEnabled true
-//            v2SigningEnabled true
-//            storeFile file('C:/Users/DEWA/Desktop/huaweiHealth-main/app/demo.jks')
-//            storePassword '12345678'
-//            keyPassword '12345678'
-//        }
-//        config {
-//            keyAlias 'HMSDemo'
-//        }
-//    }
+
+    signingConfigs {
+        release {
+            storeFile file('health.jks')
+            keyAlias 'key0'
+            keyPassword 'lolipop50'
+            storePassword 'lolipop50'
+            v1SigningEnabled true
+            v2SigningEnabled true
+            storeFile file('/Users/muhammadbintang/AndroidStudioProjects/DiaryMyDepression/health.jks')
+            storePassword 'lolipop50'
+            keyPassword 'lolipop50'
+        }
+        config {
+            keyAlias 'key0'
+        }
+    }
 
     buildTypes {
         release {
