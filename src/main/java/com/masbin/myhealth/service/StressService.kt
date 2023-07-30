@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.masbin.myhealth.ui.signin.UserManager
 //import com.masbin.myhealth.ui.signin.UserManager
 import okhttp3.*
@@ -21,7 +22,6 @@ class StressService : Service() {
     private lateinit var timer: Timer
     private lateinit var handler: Handler
     private var isServiceRunning = false
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "StressService started")
         handler = Handler()
@@ -63,6 +63,9 @@ class StressService : Service() {
         } else {
             Log.d(TAG, "User not logged in, cannot send stress data")
         }
+        val broadcastIntent = Intent(StressService.ACTION_STRESS_UPDATE)
+            .putExtra(StressService.EXTRA_STRESS_VALUE, stressValue)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent)
     }
 
     private fun getStressData(start: Int, end: Int): Int {
