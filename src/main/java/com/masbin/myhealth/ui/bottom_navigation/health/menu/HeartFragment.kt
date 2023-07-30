@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.masbin.myhealth.R
 import com.masbin.myhealth.service.HeartService
+import com.masbin.myhealth.ui.signin.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -36,15 +37,19 @@ class HeartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Ambil data detak jantung dari server Flask dan tampilkan di TextView
-        fetchDataFromServer()
-//        updateUI(listOf())
+        if (UserManager.isLoggedIn()) {
+            val userId = UserManager.getUserId()
+            // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
+            fetchDataFromServer(userId)
+        }else{
+            heartValueTextView.text = "0"
+        }
     }
 
-    private fun fetchDataFromServer() {
+    private fun fetchDataFromServer(userId: Int) {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/heart") // Sesuaikan dengan endpoint Flask untuk data detak jantung
+            .url("https://beflask.as.r.appspot.com//get/heart?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data detak jantung dan sertakan user_id dalam URL
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {

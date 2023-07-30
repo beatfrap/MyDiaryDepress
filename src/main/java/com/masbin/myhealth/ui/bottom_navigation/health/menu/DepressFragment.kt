@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.masbin.myhealth.R
+import com.masbin.myhealth.ui.signin.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -36,14 +37,21 @@ class DepressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Fetch depression level data from the Flask server and display it in the TextView
-        fetchDataFromServer()
+        // Ganti userId dengan ID user yang sesuai, misalnya 1
+        if (UserManager.isLoggedIn()) {
+            val userId = UserManager.getUserId()
+            // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
+            fetchDataFromServer(userId)
+        }else{
+            depressionLevelTextView.text = "0"
+        }
     }
 
-    private fun fetchDataFromServer() {
+    private fun fetchDataFromServer(userId: Int) {
         val client = OkHttpClient()
+        // Sertakan userId sebagai parameter pada URL permintaan
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/depress/history") // Adjust the Flask endpoint for depression level data
+            .url("https://beflask.as.r.appspot.com//get/depress/history?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data tingkat depresi
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -67,6 +75,7 @@ class DepressFragment : Fragment() {
             })
         }
     }
+
 
     private fun parseDepressionData(responseData: String): List<DepressionData> {
         val depressionList = mutableListOf<DepressionData>()

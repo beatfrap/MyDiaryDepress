@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.masbin.myhealth.R
+import com.masbin.myhealth.ui.signin.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,14 +35,19 @@ class SleepFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Fetch sleep duration data from the Flask server and display it in the TextView
-        fetchDataFromServer()
+        // Ganti userId dengan ID user yang sesuai, misalnya 1
+        if (UserManager.isLoggedIn()) {
+            val userId = UserManager.getUserId()
+            // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
+            fetchDataFromServer(userId)
+        }
     }
 
-    private fun fetchDataFromServer() {
+    private fun fetchDataFromServer(userId: Int) {
         val client = OkHttpClient()
+        // Sertakan userId sebagai parameter pada URL permintaan
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/sleep") // Adjust the Flask endpoint for sleep duration data
+            .url("https://beflask.as.r.appspot.com//get/sleep?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data durasi tidur
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -65,6 +71,7 @@ class SleepFragment : Fragment() {
             })
         }
     }
+
 
     private fun parseSleepData(responseData: String): List<SleepData> {
         val sleepList = mutableListOf<SleepData>()

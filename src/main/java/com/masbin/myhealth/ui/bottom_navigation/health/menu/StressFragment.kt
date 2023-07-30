@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.masbin.myhealth.R
+import com.masbin.myhealth.ui.signin.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,14 +35,21 @@ class StressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
-        fetchDataFromServer()
+        // Ganti userId dengan ID user yang sesuai, misalnya 1
+        if (UserManager.isLoggedIn()) {
+            val userId = UserManager.getUserId()
+            // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
+            fetchDataFromServer(userId)
+        }else{
+            stressValueTextView.text = "0"
+        }
     }
 
-    private fun fetchDataFromServer() {
+    private fun fetchDataFromServer(userId: Int) {
         val client = OkHttpClient()
+        // Sertakan userId sebagai parameter pada URL permintaan
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/stress") // Sesuaikan dengan endpoint Flask untuk data tingkat stres
+            .url("https://beflask.as.r.appspot.com//get/stress?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data tingkat stres
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -65,6 +73,7 @@ class StressFragment : Fragment() {
             })
         }
     }
+
 
     private fun parseStressData(responseData: String): List<StressData> {
         val stressList = mutableListOf<StressData>()

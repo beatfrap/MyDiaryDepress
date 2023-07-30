@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.masbin.myhealth.databinding.FragmentHomeBinding
+import com.masbin.myhealth.ui.signin.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -51,14 +52,22 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Fetch weekly depression history data from the Flask server and display it in the TextView
-        fetchHistoryDataFromServer()
+        // Ganti userId dengan ID user yang sesuai, misalnya 1
+        if (UserManager.isLoggedIn()) {
+            val userId = UserManager.getUserId()
+            // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
+            fetchHistoryDataFromServer(userId)
+        }else{
+            binding.valueDepressReal.text = "0"
+            binding.tvStatusDepress.text = "Normal"
+        }
     }
 
-    private fun fetchHistoryDataFromServer() {
+    private fun fetchHistoryDataFromServer(userId: Int) {
         val client = OkHttpClient()
+        // Sertakan userId sebagai parameter pada URL permintaan
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/depress/history/week") // Adjust the Flask endpoint for weekly depression history data
+            .url("https://beflask.as.r.appspot.com//get/depress/history/week?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data histori depresi mingguan
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -82,6 +91,7 @@ class HomeFragment : Fragment() {
             })
         }
     }
+
 
     private fun parseDepressionHistoryData(responseData: String): List<DepressionData> {
         val depressionHistoryList = mutableListOf<DepressionData>()
