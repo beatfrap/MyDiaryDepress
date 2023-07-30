@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_status"
+        android:id="@+id/tvStatusDepress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_16sdp"
@@ -39,9 +39,10 @@
         app:cardCornerRadius="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_status">
+        app:layout_constraintTop_toBottomOf="@+id/tvStatusDepress">
 
         <TextView
+            android:id="@+id/valueDepressReal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
