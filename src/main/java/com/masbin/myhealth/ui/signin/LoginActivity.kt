@@ -28,18 +28,54 @@ import kotlin.math.log
 
 object UserManager {
     private var userId: Int = -1 // Default value, bisa diganti sesuai kebutuhan
+    private var userName: String = ""
+    private var userContact: String = ""
+    private var userEmail: String = ""
+    private var userGender: String = ""
+    private var userBirthdate: String = ""
 
     fun setUserId(id: Int) {
         userId = id
+    }
+    fun setUserName(username: String) {
+        userName = username
+    }
+    fun setUserContact(contact: String) {
+        userContact = contact
+    }
+    fun setUserEmail(email: String) {
+        userEmail = email
+    }
+    fun setGender(gender: String){
+        userGender = gender
+    }
+    fun setBirthdate(birthdate: String){
+        userBirthdate = birthdate
     }
 
     fun getUserId(): Int {
         return userId
     }
-
+    fun getUserName(): String {
+        return userName
+    }
+    fun getUserContact(): String {
+        return userContact
+    }
+    fun getUserEmail(): String {
+        return userEmail
+    }
+    fun getGender(): String {
+        return userGender
+    }
+    fun getBirthdate(): String {
+        return userBirthdate
+    }
     fun isLoggedIn(): Boolean {
         return userId != -1
     }
+
+
 }
 
 
@@ -146,11 +182,22 @@ class LoginActivity : AppCompatActivity() {
 
                         // Dapatkan ID pengguna dari respons JSON
                         val userId = response.getInt("id")
+                        val userName = response.getString("username")
+                        val userContact = response.getString("emergency_contact")
+                        val email = response.getString("email")
+                        val gender = response.getString("gender")
+                        val birthdate = response.getString("birthdate")
                         UserManager.setUserId(userId)
+                        UserManager.setUserName(userName)
+                        UserManager.setUserContact(userContact)
+                        UserManager.setUserEmail(email)
+                        UserManager.setGender(gender)
+                        UserManager.setBirthdate(birthdate)
                         // Simpan status login dan ID pengguna ke Shared Preferences
                         val editor = sharedPreferences.edit()
                         editor.putBoolean("isLoggedIn", true)
                         editor.putInt("id", userId) // Simpan ID ke Shared Preferences
+                        editor.putString("username", userName)
                         editor.apply()
                         val intent = Intent(this@LoginActivity, MainAdapterActivity::class.java)
                         startActivity(intent)
