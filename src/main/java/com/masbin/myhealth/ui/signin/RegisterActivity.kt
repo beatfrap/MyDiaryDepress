@@ -20,6 +20,8 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var etContact: EditText
     private lateinit var etPassword: EditText
     private lateinit var etNameContact: EditText
+    private lateinit var etGender: EditText
+    private lateinit var etBrith: EditText
     private lateinit var btnRegister: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +30,8 @@ class RegisterActivity : AppCompatActivity() {
         supportActionBar?.hide()
         etUsername = findViewById(R.id.etUsername)
         etEmail = findViewById(R.id.etEmail)
+        etGender = findViewById(R.id.etGender)
+        etBrith = findViewById(R.id.etBrith)
         etPassword = findViewById(R.id.etPassword)
         etNameContact = findViewById(R.id.etNameContact)
         etContact = findViewById(R.id.etContact)
@@ -37,6 +41,8 @@ class RegisterActivity : AppCompatActivity() {
             val username = etUsername.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
+            val gender = etGender.text.toString().trim()
+            val brith = etBrith.text.toString().trim()
             val nameContact = etNameContact.text.toString().trim()
             val contact = etContact.text.toString().trim()
 
@@ -49,6 +55,8 @@ class RegisterActivity : AppCompatActivity() {
                 data.put("password", password)
                 data.put("emergency_contact", contact)
                 data.put("name_emergency_contact", nameContact)
+                data.put("gender", gender)
+                data.put("birthdate", brith)
 
                 SendDataToServer().execute(data.toString())
                 val intent = Intent(this, LoginActivity::class.java)
