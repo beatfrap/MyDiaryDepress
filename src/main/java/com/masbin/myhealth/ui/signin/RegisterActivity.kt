@@ -19,6 +19,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var etEmail: EditText
     private lateinit var etContact: EditText
     private lateinit var etPassword: EditText
+    private lateinit var etNameContact: EditText
     private lateinit var btnRegister: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +29,7 @@ class RegisterActivity : AppCompatActivity() {
         etUsername = findViewById(R.id.etUsername)
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
+        etNameContact = findViewById(R.id.etNameContact)
         etContact = findViewById(R.id.etContact)
         btnRegister = findViewById(R.id.btnRegister)
 
@@ -35,9 +37,10 @@ class RegisterActivity : AppCompatActivity() {
             val username = etUsername.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
+            val nameContact = etNameContact.text.toString().trim()
             val contact = etContact.text.toString().trim()
 
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || nameContact.isEmpty() || contact.isEmpty()) {
                 Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
             } else {
                 val data = JSONObject()
@@ -45,6 +48,7 @@ class RegisterActivity : AppCompatActivity() {
                 data.put("email", email)
                 data.put("password", password)
                 data.put("emergency_contact", contact)
+                data.put("name_emergency_contact", nameContact)
 
                 SendDataToServer().execute(data.toString())
                 val intent = Intent(this, LoginActivity::class.java)

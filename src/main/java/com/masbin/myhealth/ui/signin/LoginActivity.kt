@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
@@ -20,6 +21,9 @@ import org.json.JSONObject
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import android.graphics.drawable.Drawable
+import android.widget.CompoundButton
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlin.math.log
 
 object UserManager {
@@ -44,6 +48,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
     private lateinit var btnLupaPassword: Button
+    private var isPasswordVisible = false
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +85,15 @@ class LoginActivity : AppCompatActivity() {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             finish() // Don't go back to LoginActivity if already logged in
         }
+
+        togglePassword.setOnCheckedChangeListener { _, isChecked ->
+            isPasswordVisible = isChecked
+            updatePasswordVisibility()
+        }
+    }
+
+    private fun updatePasswordVisibility() {
+        etPassword.transformationMethod = if (isPasswordVisible) null else PasswordTransformationMethod.getInstance()
     }
 
     private fun lupaPassword() {
