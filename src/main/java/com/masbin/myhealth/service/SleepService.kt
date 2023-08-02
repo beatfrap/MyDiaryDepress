@@ -2,6 +2,7 @@
 package com.masbin.myhealth.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
@@ -22,15 +23,21 @@ class SleepService : Service() {
         Log.d(TAG, "SleepService started")
         handler = Handler()
         startSleepUpdates()
+        if (UserManager.isLoggedIn()) {
+            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val userId =
+                UserManager.getUserId() // Mendapatkan ID pengguna yang sedang login dari sistem autentikasi
+            sharedPreferences.edit().putInt("userId", userId).apply()
+        }
 
         return START_STICKY
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        stopSleepUpdates()
-//        Log.d(TAG, "SleepService destroyed")
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        stopSleepUpdates()
+        Log.d(TAG, "SleepService destroyed")
+    }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -50,7 +57,7 @@ class SleepService : Service() {
         override fun run() {
             if (isServiceRunning) {
                 updateAndSendSleepData()
-                handler.postDelayed(this, 5 * 60 * 1000) // Update setiap 5 menit
+                handler.postDelayed(this,  8 * 60 * 60 * 1000) // Update setiap 5 menit
             }
         }
     }

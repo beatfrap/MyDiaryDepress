@@ -24,15 +24,14 @@ class HeartService : Service() {
         Log.d(TAG, "HeartService started")
         handler = Handler()
         startHeartRateUpdates()
-
+        if (UserManager.isLoggedIn()) {
+            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val userId =
+                UserManager.getUserId() // Mendapatkan ID pengguna yang sedang login dari sistem autentikasi
+            sharedPreferences.edit().putInt("userId", userId).apply()
+        }
         return START_STICKY
     }
-
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        stopHeartRateUpdates()
-//        Log.d(TAG, "HeartService destroyed")
-//    }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null

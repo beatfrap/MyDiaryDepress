@@ -13,18 +13,15 @@ import android.widget.EditText
 import android.widget.Toast
 import com.masbin.myhealth.MainAdapterActivity
 import com.masbin.myhealth.R
-import com.masbin.myhealth.databinding.ActivityLoginBinding
-import com.masbin.myhealth.service.HeartService
 import com.masbin.myhealth.ui.bottom_navigation.home.ForgotPasswordActivity
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import android.graphics.drawable.Drawable
-import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlin.math.log
+import okio.IOException
+import java.io.File
 
 object UserManager {
     private var userId: Int = -1 // Default value, bisa diganti sesuai kebutuhan
@@ -116,6 +113,20 @@ class LoginActivity : AppCompatActivity() {
         // Check login status when the app starts
         val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
         if (isLoggedIn) {
+            val userId = sharedPreferences.getInt("id", -1)
+            val userName = sharedPreferences.getString("username", "")
+            val userContact = sharedPreferences.getString("userContact", "")
+            val email = sharedPreferences.getString("email", "")
+            val gender = sharedPreferences.getString("gender", "")
+            val birthdate = sharedPreferences.getString("birthdate", "")
+
+            UserManager.setUserId(userId)
+            UserManager.setUserName(userName ?: "")
+            UserManager.setUserContact(userContact ?: "")
+            UserManager.setUserEmail(email ?: "")
+            UserManager.setGender(gender ?: "")
+            UserManager.setBirthdate(birthdate ?: "")
+
             val intent = Intent(this@LoginActivity, MainAdapterActivity::class.java)
             startActivity(intent)
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -193,12 +204,17 @@ class LoginActivity : AppCompatActivity() {
                         UserManager.setUserEmail(email)
                         UserManager.setGender(gender)
                         UserManager.setBirthdate(birthdate)
-                        // Simpan status login dan ID pengguna ke Shared Preferences
+                        // Simpan status login dan data pengguna ke Shared Preferences
                         val editor = sharedPreferences.edit()
                         editor.putBoolean("isLoggedIn", true)
-                        editor.putInt("id", userId) // Simpan ID ke Shared Preferences
+                        editor.putInt("id", userId)
                         editor.putString("username", userName)
+                        editor.putString("userContact", userContact)
+                        editor.putString("email", email)
+                        editor.putString("gender", gender)
+                        editor.putString("birthdate", birthdate)
                         editor.apply()
+
                         val intent = Intent(this@LoginActivity, MainAdapterActivity::class.java)
                         startActivity(intent)
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -214,18 +230,5 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this@LoginActivity, "Gagal login", Toast.LENGTH_SHORT).show()
             }
         }
-
-
-    }
-
-    private fun logout() {
-        val editor = sharedPreferences.edit()
-        editor.putBoolean("isLoggedIn", false)
-        editor.apply()
-    }
-
-    // Example usage: when the logout button is clicked
-    private fun handleLogout() {
-        logout()
     }
 }

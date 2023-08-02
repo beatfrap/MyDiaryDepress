@@ -26,7 +26,12 @@ class StressService : Service() {
         Log.d(TAG, "StressService started")
         handler = Handler()
         startStressUpdates()
-
+        if (UserManager.isLoggedIn()) {
+            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val userId =
+                UserManager.getUserId() // Mendapatkan ID pengguna yang sedang login dari sistem autentikasi
+            sharedPreferences.edit().putInt("userId", userId).apply()
+        }
         return START_STICKY
     }
 
