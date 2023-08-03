@@ -46,17 +46,27 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get the userId from SharedPreferences
+        // Check login status
         val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getInt("userId", -1)
-        if (userId != -1) {
-            // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
-            fetchHistoryDataFromServer(userId)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        if (isLoggedIn) {
+            val userId = sharedPreferences.getInt("id", -1)
+            if (userId != -1) {
+                // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
+                fetchHistoryDataFromServer(userId)
+            } else {
+                // Pastikan _binding telah diinisialisasi sebelum menggunakannya
+                _binding?.valueDepressReal?.text = "0"
+                _binding?.tvStatusDepress?.text = "Normal"
+            }
         } else {
-            binding.valueDepressReal.text = "0"
-            binding.tvStatusDepress.text = "Normal"
+            // Pastikan _binding telah diinisialisasi sebelum menggunakannya
+            _binding?.valueDepressReal?.text = "0"
+            _binding?.tvStatusDepress?.text = "Normal"
         }
     }
+
+
 
     private fun fetchHistoryDataFromServer(userId: Int) {
         val client = OkHttpClient()
@@ -128,8 +138,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//    }
 }

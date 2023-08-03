@@ -37,13 +37,19 @@ class HeartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getInt("userId", -1)
-        if (userId != -1) {
-            // Ambil data detak jantung dari server Flask dan tampilkan di TextView
-            fetchDataFromServer(userId)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        if (isLoggedIn) {
+            val userId = sharedPreferences.getInt("id", -1)
+            if (userId != -1) {
+                // Ambil data detak jantung dari server Flask dan tampilkan di TextView
+                fetchDataFromServer(userId)
+            } else {
+                heartValueTextView.text = "0"
+            }
         } else {
             heartValueTextView.text = "0"
         }
+
     }
 
     private fun fetchDataFromServer(userId: Int) {

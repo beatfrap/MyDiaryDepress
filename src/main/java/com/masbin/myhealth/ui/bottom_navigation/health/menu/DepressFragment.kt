@@ -38,10 +38,15 @@ class DepressFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getInt("userId", -1)
-        if (userId != -1) {
-            // Fetch depression data from Flask server and display it in the TextView
-            fetchDataFromServer(userId)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        if (isLoggedIn) {
+            val userId = sharedPreferences.getInt("id", -1)
+            if (userId != -1) {
+                // Fetch depression level data from Flask server and display it in the TextView
+                fetchDataFromServer(userId)
+            } else {
+                depressionLevelTextView.text = "0"
+            }
         } else {
             depressionLevelTextView.text = "0"
         }
