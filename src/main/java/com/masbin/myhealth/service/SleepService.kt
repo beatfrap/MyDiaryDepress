@@ -27,7 +27,7 @@ class SleepService : Service() {
             val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
             val userId =
                 UserManager.getUserId() // Mendapatkan ID pengguna yang sedang login dari sistem autentikasi
-            sharedPreferences.edit().putInt("userId", userId).apply()
+            // sharedPreferences.edit().putInt("id", userId).apply()
         }
 
         return START_STICKY

@@ -28,8 +28,8 @@ object UserManager {
     private var userName: String = sharedPreferences.getString("username", "") ?: ""
     private var userContact: String = sharedPreferences.getString("userContact", "") ?: ""
     private var userEmail: String = sharedPreferences.getString("email", "") ?: ""
-    private var userGender: String = ""
-    private var userBirthdate: String = ""
+    private var userGender: String = sharedPreferences.getString("gender", "") ?: ""
+    private var userBirthdate: String = sharedPreferences.getString("birthDate", "") ?: ""
 
     fun setUserId(id: Int) {
         userId = id
