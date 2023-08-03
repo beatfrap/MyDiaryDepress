@@ -1,6 +1,7 @@
 // StressFragment.kt
 package com.masbin.myhealth.ui.bottom_navigation.health.menu
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.masbin.myhealth.R
-import com.masbin.myhealth.ui.signin.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,13 +34,12 @@ class StressFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Ganti userId dengan ID user yang sesuai, misalnya 1
-        if (UserManager.isLoggedIn()) {
-            val userId = UserManager.getUserId()
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", -1)
+        if (userId != -1) {
             // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
             fetchDataFromServer(userId)
-        }else{
+        } else {
             stressValueTextView.text = "0"
         }
     }

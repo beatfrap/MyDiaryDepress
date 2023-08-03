@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
-import com.masbin.myhealth.ui.signin.UserManager
 import okhttp3.*
 import java.io.IOException
 import java.util.*
@@ -20,8 +19,6 @@ class HeartService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "HeartService started")
         handler = Handler()
-        startHeartRateUpdates()
-
         // Mengambil userId dari SharedPreferences
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("id", -1)
@@ -30,11 +27,7 @@ class HeartService : Service() {
             Log.d(TAG, "User not logged in, cannot send heart rate data")
             // Pengguna belum login, lakukan sesuatu (misalnya, tampilkan pesan atau arahkan ke halaman login)
         } else {
-            // Pengguna sudah login, lanjutkan dengan mengambil data denyut jantung dan mengirimnya ke server
-            // Anda bisa menggunakan userId di sini untuk mengirim data denyut jantung sesuai dengan pengguna yang terkait
-            val heartRateValue = getHeartRateData(40, 130)
-            Log.d(TAG, "Updating heart rate data: $heartRateValue")
-            sendHeartRateData(userId, heartRateValue)
+            startHeartRateUpdates()
         }
 
         return START_STICKY
