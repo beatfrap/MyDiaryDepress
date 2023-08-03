@@ -11,18 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.masbin.myhealth.databinding.FragmentProfileBinding
 import com.masbin.myhealth.ui.signin.AccountActivity
-import com.masbin.myhealth.ui.signin.UserManager
-import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import org.json.JSONObject
-import java.io.IOException
 
 class ProfileFragment : Fragment() {
 
     private lateinit var profileViewModel: ProfileViewModel
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-    private val client = OkHttpClient()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,11 +41,29 @@ class ProfileFragment : Fragment() {
             val intent = Intent(requireContext(), AccountActivity::class.java)
             startActivity(intent)
             requireActivity().finish() // Optional: Finish the current activity to prevent going back
+        } else {
+            // Get user data from SharedPreferences
+            val userName = sharedPreferences.getString("username", "")
+            val userEmail = sharedPreferences.getString("email", "")
+            val userContact = sharedPreferences.getString("userContact", "")
+            val userGender = sharedPreferences.getString("gender", "")
+            val userBirthdate = sharedPreferences.getString("birthdate", "")
+
+            // Set the data to the respective TextViews
+            binding.tvName.text = userName
+            binding.tvEmail.text = userEmail
+            binding.tvContact.text = userContact
+            binding.tvGender.text = userGender
+            binding.tvBirth.text = userBirthdate
         }
 
         return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     private fun logout() {
         // Clear session or perform any logout operations
@@ -74,31 +86,4 @@ class ProfileFragment : Fragment() {
         // Display a toast message to the user
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // Inisialisasi variabel-variabel setelah _binding terinisialisasi
-        val tvUsername = binding.tvName
-        val tvEmail = binding.tvEmail
-        val tvContact = binding.tvContact
-        val tvGender = binding.tvGender
-        val tvBirthdate = binding.tvBirth
-
-        // Ganti userId dengan ID user yang sesuai, misalnya 1
-        if (UserManager.isLoggedIn()) {
-            val userName = UserManager.getUserName()
-            val userEmail = UserManager.getUserEmail()
-            val userContact = UserManager.getUserContact()
-            val userGender = UserManager.getGender()
-            val userBirthdate = UserManager.getBirthdate()
-            // change value in textview with the data in top
-            tvUsername.text = userName
-            tvEmail.text = userEmail
-            tvContact.text = userContact
-            tvGender.text = userGender
-            tvBirthdate.text = userBirthdate
-        }
-    }
-
 }

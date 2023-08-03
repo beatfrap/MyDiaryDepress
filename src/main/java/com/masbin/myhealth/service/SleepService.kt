@@ -1,4 +1,3 @@
-// SleepService.kt
 package com.masbin.myhealth.service
 
 import android.app.Service
@@ -8,7 +7,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import com.masbin.myhealth.ui.signin.UserManager
-//import com.masbin.myhealth.ui.signin.UserManager
 import okhttp3.*
 import java.io.IOException
 import java.util.*
@@ -22,12 +20,17 @@ class SleepService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "SleepService started")
         handler = Handler()
-        startSleepUpdates()
-        if (UserManager.isLoggedIn()) {
-            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            val userId =
-                UserManager.getUserId() // Mendapatkan ID pengguna yang sedang login dari sistem autentikasi
-            // sharedPreferences.edit().putInt("id", userId).apply()
+
+
+        // Mengambil userId dari SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("id", -1)
+
+        if (userId == -1) {
+            Log.d(TAG, "User not logged in, cannot send sleep data")
+            // Pengguna belum login, lakukan sesuatu (misalnya, tampilkan pesan atau arahkan ke halaman login)
+        } else {
+            startSleepUpdates()
         }
 
         return START_STICKY
@@ -57,17 +60,19 @@ class SleepService : Service() {
         override fun run() {
             if (isServiceRunning) {
                 updateAndSendSleepData()
-                handler.postDelayed(this,  8 * 60 * 60 * 1000) // Update setiap 5 menit
+                handler.postDelayed(this, 8 * 60 * 60 * 1000) // Update setiap 8 jam
             }
         }
     }
 
     private fun updateAndSendSleepData() {
-        val sleepValue = 6
+        val sleepValue = getSleepData(6)
         Log.d(TAG, "Updating sleep data: $sleepValue")
 
-        if (UserManager.isLoggedIn()) {
-            val userId = UserManager.getUserId()
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("id", -1)
+
+        if (userId != -1) {
             sendSleepData(userId, sleepValue)
         } else {
             Log.d(TAG, "User not logged in, cannot send sleep data")
@@ -75,7 +80,7 @@ class SleepService : Service() {
     }
 
     private fun getSleepData(start: Int): Int {
-        return random.nextInt(start)
+        return random.nextInt(start) // Menggunakan nilai acak antara 0 hingga start-1
     }
 
     private fun sendSleepData(userId: Int, sleep: Int) {

@@ -114,29 +114,6 @@ class LoginActivity : AppCompatActivity() {
         }
         btnLupaPassword.setOnClickListener { lupaPassword() }
 
-        // Check login status when the app starts
-        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
-        if (isLoggedIn) {
-            val userId = sharedPreferences.getInt("id", -1)
-            val userName = sharedPreferences.getString("username", "")
-            val userContact = sharedPreferences.getString("userContact", "")
-            val email = sharedPreferences.getString("email", "")
-            val gender = sharedPreferences.getString("gender", "")
-            val birthdate = sharedPreferences.getString("birthdate", "")
-
-            UserManager.setUserId(userId)
-            UserManager.setUserName(userName ?: "")
-            UserManager.setUserContact(userContact ?: "")
-            UserManager.setUserEmail(email ?: "")
-            UserManager.setGender(gender ?: "")
-            UserManager.setBirthdate(birthdate ?: "")
-
-            val intent = Intent(this@LoginActivity, MainAdapterActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            finish() // Don't go back to LoginActivity if already logged in
-        }
-
         togglePassword.setOnCheckedChangeListener { _, isChecked ->
             isPasswordVisible = isChecked
             updatePasswordVisibility()
@@ -202,12 +179,7 @@ class LoginActivity : AppCompatActivity() {
                         val email = response.getString("email")
                         val gender = response.getString("gender")
                         val birthdate = response.getString("birthdate")
-                        UserManager.setUserId(userId)
-                        UserManager.setUserName(userName)
-                        UserManager.setUserContact(userContact)
-                        UserManager.setUserEmail(email)
-                        UserManager.setGender(gender)
-                        UserManager.setBirthdate(birthdate)
+
                         // Simpan status login dan data pengguna ke Shared Preferences
                         val editor = sharedPreferences.edit()
                         editor.putBoolean("isLoggedIn", true)
@@ -236,3 +208,4 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 }
+

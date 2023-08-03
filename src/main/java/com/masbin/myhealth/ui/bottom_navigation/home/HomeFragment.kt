@@ -1,5 +1,6 @@
 package com.masbin.myhealth.ui.bottom_navigation.home
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +10,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.masbin.myhealth.databinding.FragmentHomeBinding
-import com.masbin.myhealth.ui.signin.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -46,12 +46,13 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Ganti userId dengan ID user yang sesuai, misalnya 1
-        if (UserManager.isLoggedIn()) {
-            val userId = UserManager.getUserId()
+        // Get the userId from SharedPreferences
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", -1)
+        if (userId != -1) {
             // Ambil data tingkat stres dari server Flask dan tampilkan di TextView
             fetchHistoryDataFromServer(userId)
-        }else{
+        } else {
             binding.valueDepressReal.text = "0"
             binding.tvStatusDepress.text = "Normal"
         }
@@ -86,7 +87,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-
     private fun parseDepressionHistoryData(responseData: String): List<DepressionData> {
         val depressionHistoryList = mutableListOf<DepressionData>()
         try {
@@ -102,7 +102,6 @@ class HomeFragment : Fragment() {
             e.printStackTrace()
         }
         return depressionHistoryList
-
     }
 
     private fun updateUI(depressionHistoryList: List<DepressionData>) {
@@ -129,6 +128,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

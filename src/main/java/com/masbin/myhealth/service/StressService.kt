@@ -1,8 +1,5 @@
-// StressService.kt
 package com.masbin.myhealth.service
 
-import android.app.Notification
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,8 +7,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.masbin.myhealth.ui.signin.UserManager
-//import com.masbin.myhealth.ui.signin.UserManager
 import okhttp3.*
 import java.io.IOException
 import java.util.*
@@ -22,16 +17,22 @@ class StressService : Service() {
     private lateinit var timer: Timer
     private lateinit var handler: Handler
     private var isServiceRunning = false
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "StressService started")
         handler = Handler()
-        startStressUpdates()
-        if (UserManager.isLoggedIn()) {
-            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            val userId =
-                UserManager.getUserId() // Mendapatkan ID pengguna yang sedang login dari sistem autentikasi
-            // sharedPreferences.edit().putInt("id", userId).apply()
+
+        // Mengambil userId dari SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("id", -1)
+
+        if (userId == -1) {
+            Log.d(TAG, "User not logged in, cannot send stress data")
+            // Pengguna belum login, lakukan sesuatu (misalnya, tampilkan pesan atau arahkan ke halaman login)
+        } else {
+            startStressUpdates()
         }
+
         return START_STICKY
     }
 
@@ -62,14 +63,17 @@ class StressService : Service() {
         val stressValue = getStressData(40, 70)
         Log.d(TAG, "Updating stress data: $stressValue")
 
-        if (UserManager.isLoggedIn()) {
-            val userId = UserManager.getUserId()
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("id", -1)
+
+        if (userId != -1) {
             sendStressData(userId, stressValue)
         } else {
             Log.d(TAG, "User not logged in, cannot send stress data")
         }
-        val broadcastIntent = Intent(StressService.ACTION_STRESS_UPDATE)
-            .putExtra(StressService.EXTRA_STRESS_VALUE, stressValue)
+
+        val broadcastIntent = Intent(ACTION_STRESS_UPDATE)
+            .putExtra(EXTRA_STRESS_VALUE, stressValue)
         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent)
     }
 

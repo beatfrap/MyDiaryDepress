@@ -1,4 +1,3 @@
-// HeartService.kt
 package com.masbin.myhealth.service
 
 import android.app.Service
@@ -8,11 +7,9 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import com.masbin.myhealth.ui.signin.UserManager
-//import com.masbin.myhealth.ui.signin.UserManager
 import okhttp3.*
 import java.io.IOException
 import java.util.*
-import kotlin.concurrent.timerTask
 
 class HeartService : Service() {
     private val random = Random()
@@ -24,12 +21,22 @@ class HeartService : Service() {
         Log.d(TAG, "HeartService started")
         handler = Handler()
         startHeartRateUpdates()
-        if (UserManager.isLoggedIn()) {
-            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            val userId =
-                UserManager.getUserId() // Mendapatkan ID pengguna yang sedang login dari sistem autentikasi
-            // sharedPreferences.edit().putInt("id", userId).apply()
+
+        // Mengambil userId dari SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("id", -1)
+
+        if (userId == -1) {
+            Log.d(TAG, "User not logged in, cannot send heart rate data")
+            // Pengguna belum login, lakukan sesuatu (misalnya, tampilkan pesan atau arahkan ke halaman login)
+        } else {
+            // Pengguna sudah login, lanjutkan dengan mengambil data denyut jantung dan mengirimnya ke server
+            // Anda bisa menggunakan userId di sini untuk mengirim data denyut jantung sesuai dengan pengguna yang terkait
+            val heartRateValue = getHeartRateData(40, 130)
+            Log.d(TAG, "Updating heart rate data: $heartRateValue")
+            sendHeartRateData(userId, heartRateValue)
         }
+
         return START_STICKY
     }
 
@@ -60,8 +67,9 @@ class HeartService : Service() {
         val heartRateValue = getHeartRateData(40, 130)
         Log.d(TAG, "Updating heart rate data: $heartRateValue")
 
-        if (UserManager.isLoggedIn()) {
-            val userId = UserManager.getUserId()
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("id", -1)
+        if (userId != -1) {
             sendHeartRateData(userId, heartRateValue)
         } else {
             Log.d(TAG, "User not logged in, cannot send heart rate data")
