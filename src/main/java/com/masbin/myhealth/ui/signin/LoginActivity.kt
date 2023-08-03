@@ -24,24 +24,28 @@ import okio.IOException
 import java.io.File
 
 object UserManager {
-    private var userId: Int = -1 // Default value, bisa diganti sesuai kebutuhan
-    private var userName: String = ""
-    private var userContact: String = ""
-    private var userEmail: String = ""
-    private var userGender: String = ""
-    private var userBirthdate: String = ""
+    private var userId: Int = sharedPreferences.getInt("id", -1)
+    private var userName: String = sharedPreferences.getString("username", "") ?: ""
+    private var userContact: String = sharedPreferences.getString("userContact", "") ?: ""
+    private var userEmail: String = sharedPreferences.getString("email", "") ?: ""
+    private var userGender: String = sharedPreferences.getString("gender", "") ?: ""
+    private var userBirthdate: String = sharedPreferences.getString("birthDate", "") ?: ""
 
     fun setUserId(id: Int) {
         userId = id
+        sharedPreferences.edit().putInt("id", id).apply()
     }
     fun setUserName(username: String) {
         userName = username
+        sharedPreferences.edit().putString("username", username).apply()
     }
     fun setUserContact(contact: String) {
         userContact = contact
+        sharedPreferences.edit().putString("userContact", contact).apply()
     }
     fun setUserEmail(email: String) {
         userEmail = email
+        sharedPreferences.edit().putString("email", email).apply()
     }
     fun setGender(gender: String){
         userGender = gender
