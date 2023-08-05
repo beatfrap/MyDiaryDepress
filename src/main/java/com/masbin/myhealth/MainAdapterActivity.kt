@@ -9,6 +9,10 @@ import com.masbin.myhealth.databinding.ActivityMainAdapterBinding
 import com.masbin.myhealth.service.HeartService
 import com.masbin.myhealth.service.SleepService
 import com.masbin.myhealth.service.StressService
+import android.os.PowerManager;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 
 class MainAdapterActivity : AppCompatActivity() {
 
