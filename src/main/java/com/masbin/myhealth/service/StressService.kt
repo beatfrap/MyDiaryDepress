@@ -82,7 +82,7 @@ class StressService : Service() {
     }
 
     private fun sendStressData(userId: Int, stress: Int) {
-        val url = "https://beflask.as.r.appspot.com//post/stress/$userId"
+        val url = "https://diary-depression.as.r.appspot.com//post/stress/$userId"
         val requestBody = FormBody.Builder()
             .add("stress", stress.toString())
             .build()

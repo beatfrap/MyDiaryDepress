@@ -55,7 +55,7 @@ class SleepFragment : Fragment() {
         val client = OkHttpClient()
         // Sertakan userId sebagai parameter pada URL permintaan
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/sleep?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data durasi tidur
+            .url("https://diary-depression.as.r.appspot.com//get/sleep?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data durasi tidur
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {

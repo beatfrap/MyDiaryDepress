@@ -53,7 +53,7 @@ class StressFragment : Fragment() {
         val client = OkHttpClient()
         // Sertakan userId sebagai parameter pada URL permintaan
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/stress?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data tingkat stres
+            .url("https://diary-depression.as.r.appspot.com//get/stress?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data tingkat stres
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {

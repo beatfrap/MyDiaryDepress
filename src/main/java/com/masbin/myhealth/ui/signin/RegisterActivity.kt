@@ -1,110 +1,105 @@
 package com.masbin.myhealth.ui.signin
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.masbin.myhealth.R
 import android.os.AsyncTask
+import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.masbin.myhealth.MainAdapterActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.masbin.myhealth.R
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.InputStreamReader
 import java.io.OutputStream
+import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 
 class RegisterActivity : AppCompatActivity() {
+
     private lateinit var etUsername: EditText
     private lateinit var etEmail: EditText
     private lateinit var etContact: EditText
     private lateinit var etPassword: EditText
     private lateinit var etNameContact: EditText
     private lateinit var etGender: EditText
-    private lateinit var etBrith: EditText
+    private lateinit var etBirthdate: EditText
     private lateinit var btnRegister: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
         supportActionBar?.hide()
+
         etUsername = findViewById(R.id.etUsername)
         etEmail = findViewById(R.id.etEmail)
         etGender = findViewById(R.id.etGender)
-        etBrith = findViewById(R.id.etBrith)
+        etBirthdate = findViewById(R.id.etBrith) // Fix typo here
         etPassword = findViewById(R.id.etPassword)
         etNameContact = findViewById(R.id.etNameContact)
         etContact = findViewById(R.id.etContact)
         btnRegister = findViewById(R.id.btnRegister)
 
         btnRegister.setOnClickListener {
-            val username = etUsername.text.toString().trim()
-            val email = etEmail.text.toString().trim()
-            val password = etPassword.text.toString().trim()
-            val gender = etGender.text.toString().trim()
-            val brith = etBrith.text.toString().trim()
-            val nameContact = etNameContact.text.toString().trim()
-            val contact = etContact.text.toString().trim()
+            val username = etUsername.text.toString()
+            val email = etEmail.text.toString()
+            val password = etPassword.text.toString()
+            val gender = etGender.text.toString()
+            val birthdate = etBirthdate.text.toString()
+            val nameContact = etNameContact.text.toString()
+            val contact = etContact.text.toString()
 
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || nameContact.isEmpty() || contact.isEmpty()) {
-                Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
-            } else {
-                val data = JSONObject()
-                data.put("username", username)
-                data.put("email", email)
-                data.put("password", password)
-                data.put("emergency_contact", contact)
-                data.put("name_emergency_contact", nameContact)
-                data.put("gender", gender)
-                data.put("birthdate", brith)
+            // Create a JSON object to hold the user registration data
+            val jsonData = JSONObject()
+            jsonData.put("username", username)
+            jsonData.put("email", email)
+            jsonData.put("password", password)
+            jsonData.put("gender", gender)
+            jsonData.put("birthdate", birthdate)
+            jsonData.put("name_contact", nameContact)
+            jsonData.put("contact", contact)
 
-                SendDataToServer().execute(data.toString())
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            }
+            // Execute the AsyncTask to register the user
+            RegisterAsyncTask().execute(jsonData.toString())
         }
     }
 
-    private inner class SendDataToServer : AsyncTask<String, Void, String>() {
-        override fun doInBackground(vararg params: String): String? {
-            val urlString = "https://beflask.as.r.appspot.com/post/register" // Ganti dengan URL server Flask Anda
+    // AsyncTask to handle the registration request
+    @SuppressLint("StaticFieldLeak")
+    private inner class RegisterAsyncTask : AsyncTask<String, Void, Boolean>() {
+
+        override fun doInBackground(vararg params: String): Boolean {
+            val urlString = "https://diary-depression.as.r.appspot.com/post/register" // Replace with your actual Flask server IP
             val jsonData = params[0]
 
-            return try {
-                val url = URL(urlString)
-                val connection = url.openConnection() as HttpURLConnection
-                connection.requestMethod = "POST"
-                connection.setRequestProperty("Content-Type", "application/json; utf-8")
-                connection.setRequestProperty("Accept", "application/json")
-                connection.doOutput = true
+            val url = URL(urlString)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.doOutput = true
 
-                val outputStream: OutputStream = connection.outputStream
-                outputStream.write(jsonData.toByteArray())
-                outputStream.flush()
-                outputStream.close()
+            val outputStream: OutputStream = connection.outputStream
+            val writer = BufferedWriter(OutputStreamWriter(outputStream))
+            writer.write(jsonData)
+            writer.flush()
+            writer.close()
 
-                val responseCode = connection.responseCode
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    val response = connection.inputStream.bufferedReader().readText()
-                    response
-                } else {
-                    null
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
+            val responseCode = connection.responseCode
+            return responseCode == HttpURLConnection.HTTP_CREATED
         }
 
-        override fun onPostExecute(result: String?) {
-            if (result != null) {
-                Toast.makeText(this@RegisterActivity, "Registration successful", Toast.LENGTH_SHORT).show()
-
+        override fun onPostExecute(result: Boolean) {
+            if (result) {
+                // Registration successful, start LoginActivity
+                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                startActivity(intent)
+                finish() // Optional: If you want to finish the RegisterActivity after registration
             } else {
-                Toast.makeText(this@RegisterActivity, "Failed to register", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RegisterActivity, "Error registering user", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 }

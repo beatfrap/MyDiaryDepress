@@ -78,7 +78,7 @@ class SleepService : Service() {
     }
 
     private fun sendSleepData(userId: Int, sleep: Int) {
-        val url = "https://beflask.as.r.appspot.com//post/sleep/$userId"
+        val url = "https://diary-depression.as.r.appspot.com//post/sleep/$userId"
         val requestBody = FormBody.Builder()
             .add("sleep", sleep.toString())
             .build()

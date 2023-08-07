@@ -42,7 +42,7 @@ class ResetPasswordActivity : AppCompatActivity() {
 
     private fun updatePasswordOnServer(email: String, newPassword: String) {
         val urlString =
-            "https://beflask.as.r.appspot.com/post/update_password" // Ganti dengan URL server Flask Anda
+            "https://diary-depression.as.r.appspot.com/post/update_password" // Ganti dengan URL server Flask Anda
         val data = JSONObject()
         data.put("email", email)
         data.put("password", newPassword)

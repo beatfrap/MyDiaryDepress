@@ -56,7 +56,7 @@ class DepressFragment : Fragment() {
         val client = OkHttpClient()
         // Sertakan userId sebagai parameter pada URL permintaan
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/depress/history?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data tingkat depresi
+            .url("https://diary-depression.as.r.appspot.com//get/depress/history?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data tingkat depresi
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {

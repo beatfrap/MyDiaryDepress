@@ -72,7 +72,7 @@ class HomeFragment : Fragment() {
         val client = OkHttpClient()
         // Sertakan userId sebagai parameter pada URL permintaan
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/depress/history/week?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data histori depresi mingguan
+            .url("https://diary-depression.as.r.appspot.com//get/depress/history/week?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data histori depresi mingguan
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {

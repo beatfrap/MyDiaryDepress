@@ -78,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
     private inner class SendDataLoginToServer : AsyncTask<String, Void, String>() {
         @Deprecated("Deprecated in Java")
         override fun doInBackground(vararg params: String): String? {
-            val urlString = "https://beflask.as.r.appspot.com/post/login" // Replace with your Flask server URL
+            val urlString = "https://diary-depression.as.r.appspot.com/post/login" // Replace with your Flask server URL
             val jsonData = params[0]
 
             return try {

@@ -55,7 +55,7 @@ class HeartFragment : Fragment() {
     private fun fetchDataFromServer(userId: Int) {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("https://beflask.as.r.appspot.com//get/heart?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data detak jantung dan sertakan user_id dalam URL
+            .url("https://diary-depression.as.r.appspot.com//get/heart?user_id=$userId") // Sesuaikan dengan endpoint Flask untuk data detak jantung dan sertakan user_id dalam URL
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {
