@@ -10,7 +10,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.TextView
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.clj.fastble.BleManager
 import com.clj.fastble.callback.BleGattCallback
-import com.clj.fastble.callback.BleReadCallback
 import com.clj.fastble.callback.BleScanCallback
 import com.clj.fastble.data.BleDevice
 import com.clj.fastble.exception.BleException
@@ -201,21 +199,8 @@ class ConnectBleActivity : AppCompatActivity() {
 
                         val intent = Intent(this@ConnectBleActivity, MainAdapterActivity::class.java)
                         startActivity(intent)
-                        BleManager.getInstance().read(
-                            bleDevice,
-                            "0000fee0-0000-1000-8000-00805f9b34fb",
-                            "0000fee1-0000-1000-8000-00805f9b34fb",
-                            object : BleReadCallback() {
-                                override fun onReadSuccess(data: ByteArray) {
-                                    Log.d("data", data.toString())
-
-                                }
-
-                                override fun onReadFailure(exception: BleException) {
-                                    Log.d("data", exception.toString())
-                                }
-                            })
-
+                        // Callback when the connection is successful
+                        // You can start reading/writing data here
 
 
                     }
