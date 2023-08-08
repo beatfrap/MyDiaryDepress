@@ -58,6 +58,11 @@
             android:name=".service.SleepService"
             android:enabled="true"
             android:exported="false" />
+
+        <service
+            android:name=".service.MasterService"
+            android:enabled="true"
+            android:exported="false" />
         <activity
             android:name=".ui.bottom_navigation.home.ForgotPasswordActivity"
             android:exported="true" />
