@@ -94,11 +94,12 @@ class RegisterActivity : AppCompatActivity() {
         override fun onPostExecute(result: Boolean) {
             if (result) {
                 // Registration successful, start LoginActivity
+                Toast.makeText(this@RegisterActivity, "Berhasil Melakukan Pendaftaran", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                 startActivity(intent)
                 finish() // Optional: If you want to finish the RegisterActivity after registration
             } else {
-                Toast.makeText(this@RegisterActivity, "Error registering user", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RegisterActivity, "Data Tidak Boleh Kosong", Toast.LENGTH_SHORT).show()
             }
         }
     }

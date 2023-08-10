@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString().trim()
 
             if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Tolong isi Username dan Password", Toast.LENGTH_SHORT).show()
             } else {
                 val data = JSONObject()
                 data.put("username", username)
@@ -114,7 +114,7 @@ class LoginActivity : AppCompatActivity() {
                     val response = JSONObject(result)
                     val message = response.getString("message")
                     if (message == "Login successful") {
-                        Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity, "Login Berhasil", Toast.LENGTH_SHORT).show()
 
                         // Dapatkan ID pengguna dari respons JSON
                         val userId = response.getInt("id")
@@ -144,7 +144,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()
-                    Toast.makeText(this@LoginActivity, "Respon server tidak valid", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, "Respons server tidak valid", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(this@LoginActivity, "Gagal login", Toast.LENGTH_SHORT).show()

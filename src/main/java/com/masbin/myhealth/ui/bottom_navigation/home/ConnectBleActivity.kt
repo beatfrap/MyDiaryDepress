@@ -177,16 +177,19 @@ class ConnectBleActivity : AppCompatActivity() {
                     }
 
                     override fun onConnectFail(bleDevice: BleDevice, exception: BleException) {
+                        runOnUiThread {
+                            // Show a Toast message when connection fails
+                            Toast.makeText(this@ConnectBleActivity, "Gagal Terhubung dengan Smartband", Toast.LENGTH_SHORT).show()
+                        }
                         // Callback when the connection fails
                     }
-
                     override fun onConnectSuccess(
                         bleDevice: BleDevice,
                         gatt: BluetoothGatt,
                         status: Int
                     ) {
                         runOnUiThread {
-                            Toast.makeText(this@ConnectBleActivity, "Smartband connected!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@ConnectBleActivity, "Berhasil Terhubung Dengan Smartband!", Toast.LENGTH_SHORT).show()
                             val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
                             editor.putString("smartbandName", bleDevice.name)
@@ -196,15 +199,11 @@ class ConnectBleActivity : AppCompatActivity() {
 
                             textViewSmartband.text = "Smartband Name: ${bleDevice.name}\nMAC Address: ${bleDevice.mac}"
                         }
-
                         val intent = Intent(this@ConnectBleActivity, MainAdapterActivity::class.java)
                         startActivity(intent)
                         // Callback when the connection is successful
                         // You can start reading/writing data here
-
-
                     }
-
                     override fun onDisConnected(
                         isActiveDisConnected: Boolean,
                         device: BleDevice,
