@@ -21,7 +21,7 @@ class ResetPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
-
+        supportActionBar?.hide()
         etNewPassword = findViewById(R.id.etNewPassword)
         btnUpdatePassword = findViewById(R.id.btnUpdatePassword)
 
@@ -31,7 +31,7 @@ class ResetPasswordActivity : AppCompatActivity() {
             val newPassword = etNewPassword.text.toString().trim()
 
             if (newPassword.isEmpty()) {
-                Toast.makeText(this, "Please enter a new password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Tolong isi password baru kamu", Toast.LENGTH_SHORT).show()
             } else {
                 if (email != null) {
                     updatePasswordOnServer(email, newPassword)

@@ -7,6 +7,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.masbin.myhealth.R
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import org.json.JSONObject
+import java.io.IOException
 
 class ForgotPasswordActivity : AppCompatActivity() {
     private lateinit var etEmail: EditText
@@ -15,34 +19,71 @@ class ForgotPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forgot_password)
-
+        supportActionBar?.hide()
         etEmail = findViewById(R.id.etEmail)
         btnResetPassword = findViewById(R.id.btnResetPassword)
-
         btnResetPassword.setOnClickListener {
             val email = etEmail.text.toString().trim()
 
             if (email.isEmpty()) {
-                Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Tolong Isi Email Kamu", Toast.LENGTH_SHORT).show()
             } else {
-                // Periksa apakah email ada dalam sistem
-                if (isEmailExistsInSystem(email)) {
-                    // Email ditemukan, tampilkan tampilan mengganti password
-                    val intent = Intent(this, ResetPasswordActivity::class.java)
-                    intent.putExtra("email", email)
-                    startActivity(intent)
-                } else {
-                    // Email tidak ditemukan
-                    Toast.makeText(this, "Email not found", Toast.LENGTH_SHORT).show()
-                }
+                val data = JSONObject()
+                data.put("email", email)
+
+                // Kirim permintaan ke server untuk memeriksa validitas email
+                val url = "https://diary-depression.as.r.appspot.com/post/forget/password"
+                val client = OkHttpClient()
+                val requestBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), data.toString())
+                val request = Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .build()
+
+                client.newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        // Gagal menghubungi server
+                        runOnUiThread {
+                            Toast.makeText(this@ForgotPasswordActivity, "Failed to connect to server", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        val responseBody = response.body?.string()
+                        response.close()
+
+                        if (response.isSuccessful) {
+                            try {
+                                val jsonResponse = JSONObject(responseBody)
+                                val message = jsonResponse.getString("message")
+                                if (message == "Email is valid") {
+                                    // Email valid, lanjut ke tampilan penggantian password
+
+                                    val intent = Intent(this@ForgotPasswordActivity, ResetPasswordActivity::class.java)
+                                    intent.putExtra("email", email)
+                                    startActivity(intent)
+                                    runOnUiThread {
+                                        Toast.makeText(this@ForgotPasswordActivity, "Email Valid", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                } else {
+                                    // Email tidak valid
+                                    runOnUiThread {
+                                        Toast.makeText(this@ForgotPasswordActivity, "Email not found", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        } else {
+                            // Respons tidak sukses dari server
+                            runOnUiThread {
+                                Toast.makeText(this@ForgotPasswordActivity, "Email Tidak Ditemukan", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                })
             }
         }
-    }
-
-    private fun isEmailExistsInSystem(email: String): Boolean {
-        // Lakukan pengecekan email dalam sistem, misalnya dengan query ke database
-        // Mengembalikan true jika email ditemukan, false jika tidak
-        // Implementasikan logika pengecekan email di sini
-        return false
     }
 }
