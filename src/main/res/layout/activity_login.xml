@@ -82,10 +82,12 @@
             android:layout_alignBottom="@id/etPassword"
             android:layout_toEndOf="@id/etPassword"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginTop="35dp"
-            android:layout_marginStart="280dp"
-            android:textOn="Hide"
-            android:textOff="Show"/>
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="320dp"
+            android:drawableLeft="@drawable/eye_ic"
+            android:textOff=""
+            android:textOn=""
+            tools:ignore="MissingPrefix" />
 
 
     </androidx.cardview.widget.CardView>
