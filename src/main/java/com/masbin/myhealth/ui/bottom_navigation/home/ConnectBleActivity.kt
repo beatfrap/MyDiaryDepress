@@ -224,6 +224,13 @@ class ConnectBleActivity : AppCompatActivity() {
                     }
                 })
             }
+            else {
+                // Show a Toast message if the Bluetooth address is not valid
+                Toast.makeText(this@ConnectBleActivity, "Alamat Bluetooth Tidak Valid", Toast.LENGTH_SHORT).show()
+            }
+        }else {
+            // Show a Toast message if the Bluetooth address is empty
+            Toast.makeText(this@ConnectBleActivity, "Masukkan Alamat Bluetooth", Toast.LENGTH_SHORT).show()
         }
     }
 
